@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Core", "Jeeves.Core\Jeeves.Core.csproj", "{8C13E1AE-879D-48A7-8C51-3FC30CEC89EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Client", "Jeeves.Client\Jeeves.Client.csproj", "{B228EA7D-34C8-4296-9A22-CDFE59C055A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.SimpleHost", "Jeeves.SimpleHost\Jeeves.SimpleHost.csproj", "{43B54775-9E28-4BF2-AD64-54D7C9BD3265}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Common", "Jeeves.Common\Jeeves.Common.csproj", "{C46815C9-A251-430E-B339-F5144007257C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Core.UnitTests", "Jeeves.Core.UnitTests\Jeeves.Core.UnitTests.csproj", "{EEE1F13A-9774-4863-B0F1-41ABCF98407D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C13E1AE-879D-48A7-8C51-3FC30CEC89EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C13E1AE-879D-48A7-8C51-3FC30CEC89EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C13E1AE-879D-48A7-8C51-3FC30CEC89EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C13E1AE-879D-48A7-8C51-3FC30CEC89EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B228EA7D-34C8-4296-9A22-CDFE59C055A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B228EA7D-34C8-4296-9A22-CDFE59C055A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B228EA7D-34C8-4296-9A22-CDFE59C055A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B228EA7D-34C8-4296-9A22-CDFE59C055A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43B54775-9E28-4BF2-AD64-54D7C9BD3265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43B54775-9E28-4BF2-AD64-54D7C9BD3265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43B54775-9E28-4BF2-AD64-54D7C9BD3265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43B54775-9E28-4BF2-AD64-54D7C9BD3265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C46815C9-A251-430E-B339-F5144007257C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C46815C9-A251-430E-B339-F5144007257C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C46815C9-A251-430E-B339-F5144007257C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C46815C9-A251-430E-B339-F5144007257C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
