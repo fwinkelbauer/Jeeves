@@ -6,6 +6,11 @@ namespace Jeeves.Core
 {
     public class JeevesUser
     {
+        private JeevesUser()
+        {
+            // Use the factory methods provided below
+        }
+
         public string UserName { get; set; }
 
         public string ApplicationName { get; set; }
