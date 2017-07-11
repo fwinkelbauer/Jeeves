@@ -2,7 +2,7 @@
 using System.IO;
 using Jeeves.Core;
 
-namespace Jeeves.SimpleHost
+namespace Jeeves.Host
 {
     public static class Program
     {

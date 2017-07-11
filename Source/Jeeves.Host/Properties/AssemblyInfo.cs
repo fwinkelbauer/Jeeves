@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Jeeves.Web.SimpleHost")]
+[assembly: AssemblyTitle("Jeeves.Host")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Jeeves.Web.SimpleHost")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("Jeeves.Host")]
 [assembly: AssemblyCopyright("Copyright © 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("919a8219-0488-4df3-a204-19025b449750")]
+[assembly: Guid("373689fb-6f63-4d9b-b6a0-694cee661cfe")]
 
 // Version information for an assembly consists of the following four values:
 //
