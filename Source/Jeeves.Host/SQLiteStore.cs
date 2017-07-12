@@ -24,13 +24,11 @@ WHERE Apikey = @Apikey";
 
         #endregion
 
-        private readonly FileInfo _database;
         private readonly string _connectionString;
 
         public SQLiteStore(FileInfo database)
         {
-            _database = database.ThrowIfNull(nameof(database));
-            _connectionString = $"Data Source = {_database}";
+            _connectionString = $"Data Source = {database.ThrowIfNull(nameof(database))}";
         }
 
         public string RetrieveJson(string application, string userName, string key)

@@ -1,6 +1,4 @@
-﻿using Jeeves.Common;
-
-namespace Jeeves.Core
+﻿namespace Jeeves.Core
 {
     public class JeevesSettings
     {
