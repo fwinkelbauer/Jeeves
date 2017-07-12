@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.IO;
+using Jeeves.Common;
 using Jeeves.Core;
 
 namespace Jeeves.Host
@@ -28,7 +29,7 @@ WHERE Apikey = @Apikey";
 
         public SQLiteStore(FileInfo database)
         {
-            _database = database ?? throw new ArgumentNullException(nameof(database));
+            _database = database.ThrowIfNull(nameof(database));
             _connectionString = $"Data Source = {_database}";
         }
 
