@@ -1,14 +1,13 @@
-CREATE TABLE IF NOT EXISTS Configuration
+CREATE TABLE Configuration
 (
   ID            INTEGER     PRIMARY KEY,
   Application   TEXT        COLLATE NOCASE NOT NULL,
-  Host          TEXT        COLLATE NOCASE NOT NULL,
-  Revision      INTEGER     NOT NULL,
+  UserName      TEXT        COLLATE NOCASE NOT NULL,
   Key           TEXT        COLLATE NOCASE NOT NULL,
   Value         TEXT        NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS User
+CREATE TABLE User
 (
   ID            INTEGER     PRIMARY KEY,
   Apikey        TEXT        UNIQUE,

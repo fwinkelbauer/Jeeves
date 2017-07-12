@@ -25,18 +25,18 @@ namespace Jeeves.DataMigration
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Success!");
-                Console.ResetColor();
-                Console.WriteLine("Press ENTER to exit");
-                Console.ReadLine();
-                return 0;
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(result.Error);
             }
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(result.Error);
             Console.ResetColor();
             Console.WriteLine("Press ENTER to exit");
             Console.ReadLine();
-            return -1;
+
+            return result.Successful ? 0 : -1;
         }
     }
 }

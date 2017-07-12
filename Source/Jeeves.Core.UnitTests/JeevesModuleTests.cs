@@ -12,7 +12,7 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetJson_Ok()
         {
-            var settings = new JeevesSettings(false, "secret");
+            var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
             store.RetrieveJson("my_app", "me", "my_key").Returns("{ \"Revision\" : 0, \"Data\" : \"Foo\" }");
             store.RetrieveUser("my_api").Returns(JeevesUser.CreateAdmin("me"));
@@ -31,7 +31,7 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetJson_UnauthorizedNoApikey()
         {
-            var settings = new JeevesSettings(false, string.Empty);
+            var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
 
             var response = PerformRequest(settings, store, "/get/json/my_app/my_key", with => with.HttpRequest());
@@ -42,7 +42,7 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetJson_RequireHttps_NoHttps()
         {
-            var settings = new JeevesSettings(true, "secret");
+            var settings = new JeevesSettings(true);
             var store = Substitute.For<IDataStore>();
             store.RetrieveUser("my_api").Returns(JeevesUser.CreateAdmin("me"));
 
@@ -58,7 +58,7 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetJson_RequireHttps_UseHttps()
         {
-            var settings = new JeevesSettings(true, "secret");
+            var settings = new JeevesSettings(true);
             var store = Substitute.For<IDataStore>();
             store.RetrieveJson("my_app", "me", "my_key").Returns("{ \"Revision\" : 0, \"Data\" : \"Foo\" }");
             store.RetrieveUser("my_api").Returns(JeevesUser.CreateAdmin("me"));
@@ -75,7 +75,7 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetJson_UnauthorizedWrongApikey()
         {
-            var settings = new JeevesSettings(false, string.Empty);
+            var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
 
             var response = PerformRequest(settings, store, "/get/json/my_app/my_key", with =>
@@ -90,7 +90,7 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetJson_ThrowsExceptionIfNoData()
         {
-            var settings = new JeevesSettings(false, "secret");
+            var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
             store.RetrieveUser("my_api").Returns(JeevesUser.CreateAdmin("me"));
 
