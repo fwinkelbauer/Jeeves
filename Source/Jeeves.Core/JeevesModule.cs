@@ -53,7 +53,7 @@ namespace Jeeves.Core
 
                 if (string.IsNullOrEmpty(value))
                 {
-                    throw new InvalidOperationException("No data found");
+                    return HttpStatusCode.NoContent;
                 }
 
                 return (Response)value;

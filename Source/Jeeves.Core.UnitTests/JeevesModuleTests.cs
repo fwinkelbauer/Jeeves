@@ -22,7 +22,7 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
-        public void GetValue_UnauthorizedNoApikey()
+        public void GetValue_Unauthorized_NoApikey()
         {
             var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
@@ -60,7 +60,7 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
-        public void GetValue_UnauthorizedWrongApikey()
+        public void GetValue_Unauthorized_WrongApikey()
         {
             var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
@@ -71,14 +71,14 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
-        public void GetValue_ThrowsExceptionIfNoData()
+        public void GetValue_ReturnsStatusNoContent_NoDataInStore()
         {
             var settings = new JeevesSettings(false);
             var store = CreateStoreWithAdmin("my_api");
 
             var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "my_api");
 
-            Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
+            Assert.AreEqual(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         private static void AssertOkResponse(string expectedValue, BrowserResponse response)
