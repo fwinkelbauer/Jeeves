@@ -31,7 +31,7 @@ WHERE Apikey = @Apikey";
             _connectionString = $"Data Source = {database.ThrowIfNull(nameof(database))}";
         }
 
-        public string RetrieveJson(string application, string userName, string key)
+        public string RetrieveValue(string application, string userName, string key)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             using (var cmd = new SQLiteCommand(connection))

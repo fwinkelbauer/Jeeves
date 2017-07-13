@@ -42,24 +42,21 @@ namespace Jeeves.Core
 
         private void ConfigureApi()
         {
-            Get["/get/json/{application}/{key}"] = parameters =>
+            Get["/get/{application}/{key}"] = parameters =>
             {
                 this.RequiresAnyClaim("Admin", $"({parameters.application})");
 
-                var json = _store.RetrieveJson(
+                var value = _store.RetrieveValue(
                     parameters.application,
                     Context.CurrentUser.UserName,
                     parameters.key);
 
-                if (string.IsNullOrEmpty(json))
+                if (string.IsNullOrEmpty(value))
                 {
                     throw new InvalidOperationException("No data found");
                 }
 
-                var response = (Response)json;
-                response.ContentType = "application/json";
-
-                return response;
+                return (Response)value;
             };
         }
     }

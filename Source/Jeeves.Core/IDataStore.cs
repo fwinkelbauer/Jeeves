@@ -2,7 +2,7 @@
 {
     public interface IDataStore
     {
-        string RetrieveJson(string application, string host, string key);
+        string RetrieveValue(string application, string host, string key);
 
         JeevesUser RetrieveUser(string apikey);
     }

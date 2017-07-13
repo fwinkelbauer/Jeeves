@@ -10,47 +10,47 @@ namespace Jeeves.Core.UnitTests
     public class JeevesModuleTests
     {
         [TestMethod]
-        public void GetJson_Ok()
+        public void GetValue_Ok()
         {
             var settings = new JeevesSettings(false);
             var store = CreateStoreWithAdmin("my_api");
-            store.RetrieveJson("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
+            store.RetrieveValue("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
-            var response = PerformHttpRequest(settings, store, "/get/json/my_app/my_key", "my_api");
+            var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "my_api");
 
             AssertOkResponse("{ \"Data\" : \"Foo\" }", response);
         }
 
         [TestMethod]
-        public void GetJson_UnauthorizedNoApikey()
+        public void GetValue_UnauthorizedNoApikey()
         {
             var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
 
-            var response = PerformRequest(settings, store, "/get/json/my_app/my_key", with => with.HttpRequest());
+            var response = PerformRequest(settings, store, "/get/my_app/my_key", with => with.HttpRequest());
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [TestMethod]
-        public void GetJson_RequireHttps_DoNotUseHttps()
+        public void GetValue_RequireHttps_DoNotUseHttps()
         {
             var settings = new JeevesSettings(true);
             var store = CreateStoreWithAdmin("my_api");
 
-            var response = PerformHttpRequest(settings, store, "/get/json/my_app/my_key", "my_api");
+            var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "my_api");
 
             Assert.AreEqual(HttpStatusCode.SeeOther, response.StatusCode);
         }
 
         [TestMethod]
-        public void GetJson_RequireHttps_UseHttps()
+        public void GetValue_RequireHttps_UseHttps()
         {
             var settings = new JeevesSettings(true);
             var store = CreateStoreWithAdmin("my_api");
-            store.RetrieveJson("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
+            store.RetrieveValue("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
-            var response = PerformRequest(settings, store, "/get/json/my_app/my_key", with =>
+            var response = PerformRequest(settings, store, "/get/my_app/my_key", with =>
             {
                 with.Query("apikey", "my_api");
                 with.HttpsRequest();
@@ -60,31 +60,31 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
-        public void GetJson_UnauthorizedWrongApikey()
+        public void GetValue_UnauthorizedWrongApikey()
         {
             var settings = new JeevesSettings(false);
             var store = Substitute.For<IDataStore>();
 
-            var response = PerformHttpRequest(settings, store, "/get/json/my_app/my_key", "some_other_secret");
+            var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "some_other_secret");
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [TestMethod]
-        public void GetJson_ThrowsExceptionIfNoData()
+        public void GetValue_ThrowsExceptionIfNoData()
         {
             var settings = new JeevesSettings(false);
             var store = CreateStoreWithAdmin("my_api");
 
-            var response = PerformHttpRequest(settings, store, "/get/json/my_app/my_key", "my_api");
+            var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "my_api");
 
             Assert.AreEqual(HttpStatusCode.InternalServerError, response.StatusCode);
         }
 
-        private static void AssertOkResponse(string expectedJson, BrowserResponse response)
+        private static void AssertOkResponse(string expectedValue, BrowserResponse response)
         {
-            Assert.AreEqual("application/json", response.ContentType);
-            Assert.AreEqual(expectedJson, response.Body.AsString());
+            Assert.AreEqual("text/html", response.ContentType);
+            Assert.AreEqual(expectedValue, response.Body.AsString());
         }
 
         private IDataStore CreateStoreWithAdmin(string apikey)
