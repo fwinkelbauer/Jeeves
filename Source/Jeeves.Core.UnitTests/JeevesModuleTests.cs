@@ -10,7 +10,7 @@ namespace Jeeves.Core.UnitTests
     public class JeevesModuleTests
     {
         [TestMethod]
-        public void GetValue_Ok()
+        public void GetValue_Ok_UseHttp()
         {
             var settings = new JeevesSettings(false);
             var store = CreateStoreWithAdmin("my_api");
@@ -22,29 +22,7 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
-        public void GetValue_Unauthorized_NoApikey()
-        {
-            var settings = new JeevesSettings(false);
-            var store = Substitute.For<IDataStore>();
-
-            var response = PerformRequest(settings, store, "/get/my_app/my_key", with => with.HttpRequest());
-
-            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-        [TestMethod]
-        public void GetValue_RequireHttps_DoNotUseHttps()
-        {
-            var settings = new JeevesSettings(true);
-            var store = CreateStoreWithAdmin("my_api");
-
-            var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "my_api");
-
-            Assert.AreEqual(HttpStatusCode.SeeOther, response.StatusCode);
-        }
-
-        [TestMethod]
-        public void GetValue_RequireHttps_UseHttps()
+        public void GetValue_Ok_UseHttps()
         {
             var settings = new JeevesSettings(true);
             var store = CreateStoreWithAdmin("my_api");
@@ -60,6 +38,28 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
+        public void GetValue_SeeOther_NoHttps()
+        {
+            var settings = new JeevesSettings(true);
+            var store = CreateStoreWithAdmin("my_api");
+
+            var response = PerformHttpRequest(settings, store, "/get/my_app/my_key", "my_api");
+
+            Assert.AreEqual(HttpStatusCode.SeeOther, response.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetValue_Unauthorized_NoApikey()
+        {
+            var settings = new JeevesSettings(false);
+            var store = Substitute.For<IDataStore>();
+
+            var response = PerformRequest(settings, store, "/get/my_app/my_key", with => with.HttpRequest());
+
+            Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [TestMethod]
         public void GetValue_Unauthorized_WrongApikey()
         {
             var settings = new JeevesSettings(false);
@@ -71,7 +71,7 @@ namespace Jeeves.Core.UnitTests
         }
 
         [TestMethod]
-        public void GetValue_ReturnsStatusNoContent_NoDataInStore()
+        public void GetValue_NoContent_NoValueInDataStore()
         {
             var settings = new JeevesSettings(false);
             var store = CreateStoreWithAdmin("my_api");
@@ -84,6 +84,7 @@ namespace Jeeves.Core.UnitTests
         private static void AssertOkResponse(string expectedValue, BrowserResponse response)
         {
             Assert.AreEqual("text/html", response.ContentType);
+            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual(expectedValue, response.Body.AsString());
         }
 

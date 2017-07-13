@@ -1,5 +1,4 @@
-﻿using System;
-using Nancy;
+﻿using Nancy;
 using Nancy.Authentication.Stateless;
 using Nancy.Security;
 
@@ -7,19 +6,22 @@ namespace Jeeves.Core
 {
     internal class JeevesModule : NancyModule
     {
-        private readonly JeevesSettings _settings;
         private readonly IDataStore _store;
 
         public JeevesModule(JeevesSettings settings, IDataStore store)
         {
-            _settings = settings;
             _store = store;
 
-            ConfigureSecurity();
+            if (settings.UseHttps)
+            {
+                this.RequiresHttps();
+            }
+
+            ConfigureAuthentication();
             ConfigureApi();
         }
 
-        private void ConfigureSecurity()
+        private void ConfigureAuthentication()
         {
             var configuration = new StatelessAuthenticationConfiguration(ctx =>
             {
@@ -33,11 +35,6 @@ namespace Jeeves.Core
 
             StatelessAuthentication.Enable(this, configuration);
             this.RequiresAuthentication();
-
-            if (_settings.UseHttps)
-            {
-                this.RequiresHttps();
-            }
         }
 
         private void ConfigureApi()
