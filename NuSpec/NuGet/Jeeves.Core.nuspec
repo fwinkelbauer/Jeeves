@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Jeeves.Core</id>
+    <version>0.1.0</version>
+    <authors>fwinkelbauer</authors>
+    <owners>fwinkelbauer</owners>
+    <projectUrl>https://github.com/fwinkelbauer/Jeeves</projectUrl>
+    <licenseUrl>https://github.com/fwinkelbauer/Jeeves/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <summary>A template to create a standalone configuration store web service.</summary>
+    <description>Jeeves.Core is a self contained web service which serves your own implementation of a configuration store through a REST API.</description>
+    <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
+    <tags>Configuration Service</tags>
+    <dependencies>
+      <dependency id="Nancy" version="1.4.3" />
+      <dependency id="Nancy.Authentication.Stateless" version="1.4.1" />
+      <dependency id="Nancy.Hosting.Self" version="1.4.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Common.dll" target="lib\net45" />
+    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Common.pdb" target="lib\net45" />
+    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Core.dll" target="lib\net45" />
+    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Core.pdb" target="lib\net45" />
+  </files>
+</package>
