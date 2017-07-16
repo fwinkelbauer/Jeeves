@@ -8,7 +8,7 @@ namespace Jeeves.Host
     {
         public static void Main()
         {
-            var settings = new JeevesSettings(false);
+            var settings = new JeevesSettings(false, true);
 
             var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var file = new FileInfo(Path.Combine(userFolder, "Jeeves.sqlite"));

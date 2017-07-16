@@ -6,23 +6,34 @@ namespace Jeeves.Core
 {
     internal class JeevesModule : NancyModule
     {
+        private readonly JeevesSettings _settings;
         private readonly IDataStore _store;
 
         public JeevesModule(JeevesSettings settings, IDataStore store)
         {
+            _settings = settings;
             _store = store;
 
-            if (settings.UseHttps)
-            {
-                this.RequiresHttps();
-            }
-
+            ConfigureSecurity();
             ConfigureAuthentication();
             ConfigureApi();
         }
 
+        private void ConfigureSecurity()
+        {
+            if (_settings.UseHttps)
+            {
+                this.RequiresHttps();
+            }
+        }
+
         private void ConfigureAuthentication()
         {
+            if (!_settings.UseAuthentication)
+            {
+                return;
+            }
+
             var configuration = new StatelessAuthenticationConfiguration(ctx =>
             {
                 if (!ctx.Request.Query.apikey.HasValue)
@@ -39,13 +50,17 @@ namespace Jeeves.Core
 
         private void ConfigureApi()
         {
-            Get["/get/{application}/{key}"] = parameters =>
+            Get["/get/{user}/{application}/{key}"] = parameters =>
             {
-                this.RequiresAnyClaim("Admin", $"({parameters.application})");
+                if (_settings.UseAuthentication)
+                {
+                    this.RequiresClaims($"user: {parameters.user}", $"app: {parameters.application}");
+                    this.RequiresAnyClaim("access: read", "access: read/write");
+                }
 
                 var value = _store.RetrieveValue(
                     parameters.application,
-                    Context.CurrentUser.UserName,
+                    parameters.user,
                     parameters.key);
 
                 if (string.IsNullOrEmpty(value))

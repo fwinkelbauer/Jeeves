@@ -6,9 +6,11 @@ namespace Jeeves.Core
 {
     public class JeevesUser
     {
-        private JeevesUser()
+        public JeevesUser(string userName, string applicationName, bool canWrite)
         {
-            // Use the factory methods provided below
+            UserName = userName.ThrowIfNull(nameof(userName));
+            ApplicationName = applicationName.ThrowIfNull(nameof(applicationName));
+            CanWrite = canWrite;
         }
 
         public string UserName { get; set; }
@@ -16,32 +18,6 @@ namespace Jeeves.Core
         public string ApplicationName { get; set; }
 
         public bool CanWrite { get; set; }
-
-        public bool IsAdmin { get; set; }
-
-        public static JeevesUser CreateAdmin(string userName)
-        {
-            // TODO fw test me
-            return new JeevesUser()
-            {
-                UserName = userName.ThrowIfNull(nameof(userName)),
-                ApplicationName = string.Empty,
-                CanWrite = true,
-                IsAdmin = true
-            };
-        }
-
-        public static JeevesUser CreateUser(string userName, string applicationName, bool canWrite)
-        {
-            // TODO fw test me
-            return new JeevesUser()
-            {
-                UserName = userName.ThrowIfNull(nameof(userName)),
-                ApplicationName = applicationName.ThrowIfNull(nameof(applicationName)),
-                CanWrite = canWrite,
-                IsAdmin = false
-            };
-        }
 
         public override bool Equals(object obj)
         {
@@ -55,8 +31,7 @@ namespace Jeeves.Core
 
             return UserName.Equals(user.UserName)
                 && ApplicationName.Equals(user.ApplicationName)
-                && CanWrite == user.CanWrite
-                && IsAdmin == user.IsAdmin;
+                && CanWrite == user.CanWrite;
         }
 
         public override int GetHashCode()
@@ -68,20 +43,17 @@ namespace Jeeves.Core
         public override string ToString()
         {
             // TODO fw test me
-            return $"User: {UserName}, App: {ApplicationName}, Write: {CanWrite}, Admin: {IsAdmin}";
+            return $"User: {UserName}, App: {ApplicationName}, Write: {CanWrite}";
         }
 
         internal IUserIdentity ToUserIdentity()
         {
             // TODO fw test me
-            if (IsAdmin)
-            {
-                return new UserIdentity(UserName, "Admin");
-            }
-            else
-            {
-                return new UserIdentity(UserName, $"({ApplicationName})", CanWrite ? "Read/Write" : "Read");
-            }
+            var userClaim = $"user: {UserName}";
+            var appClaim = $"app: {ApplicationName}";
+            var accessClaim = CanWrite ? "access: read" : "access: read/write";
+
+            return new UserIdentity(UserName, userClaim, appClaim, accessClaim);
         }
 
         private class UserIdentity : IUserIdentity

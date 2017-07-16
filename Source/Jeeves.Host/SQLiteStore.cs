@@ -19,7 +19,7 @@ ORDER BY UserName DESC, ID DESC
 LIMIT 1";
 
         private const string SelectUserQuery = @"
-SELECT UserName, Application, CanWrite, IsAdmin FROM User
+SELECT UserName, Application, CanWrite FROM User
 WHERE Apikey = @Apikey";
 
         #endregion
@@ -64,19 +64,10 @@ WHERE Apikey = @Apikey";
                     if (reader.Read())
                     {
                         var userName = reader["UserName"].ToString();
-                        var isAdmin = Convert.ToBoolean(reader["IsAdmin"]);
+                        var applicationName = reader["Application"].ToString();
+                        var canWrite = Convert.ToBoolean(reader["CanWrite"]);
 
-                        if (isAdmin)
-                        {
-                            return JeevesUser.CreateAdmin(userName);
-                        }
-                        else
-                        {
-                            var applicationName = reader["Application"].ToString();
-                            var canWrite = Convert.ToBoolean(reader["CanWrite"]);
-
-                            return JeevesUser.CreateUser(userName, applicationName, canWrite);
-                        }
+                        return new JeevesUser(userName, applicationName, canWrite);
                     }
 
                     return null;

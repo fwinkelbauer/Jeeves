@@ -13,6 +13,5 @@ CREATE TABLE User
   Apikey        TEXT        UNIQUE,
   UserName      TEXT        COLLATE NOCASE NOT NULL,
   Application   TEXT        COLLATE NOCASE NOT NULL,
-  CanWrite      BOOLEAN     NOT NULL,
-  IsAdmin       BOOLEAN     NOT NULL
+  CanWrite      BOOLEAN     NOT NULL
 );
