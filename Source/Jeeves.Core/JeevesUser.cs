@@ -52,7 +52,7 @@ namespace Jeeves.Core
             return new UserIdentity(UserName, userClaim, appClaim, accessClaim);
         }
 
-        internal class UserIdentity : IUserIdentity
+        private class UserIdentity : IUserIdentity
         {
             public UserIdentity(string userName, params string[] claims)
             {
