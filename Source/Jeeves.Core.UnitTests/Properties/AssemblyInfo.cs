@@ -1,4 +1,3 @@
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -10,7 +9,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
 
 [assembly: ComVisible(false)]
 

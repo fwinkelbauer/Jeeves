@@ -13,15 +13,14 @@ namespace Jeeves.Core
             CanWrite = canWrite;
         }
 
-        public string UserName { get; set; }
+        public string UserName { get; }
 
-        public string ApplicationName { get; set; }
+        public string ApplicationName { get; }
 
-        public bool CanWrite { get; set; }
+        public bool CanWrite { get; }
 
         public override bool Equals(object obj)
         {
-            // TODO fw test me
             var user = obj as JeevesUser;
 
             if (user == null)
@@ -36,27 +35,24 @@ namespace Jeeves.Core
 
         public override int GetHashCode()
         {
-            // TODO fw test me
             return ToString().GetHashCode();
         }
 
         public override string ToString()
         {
-            // TODO fw test me
             return $"User: {UserName}, App: {ApplicationName}, Write: {CanWrite}";
         }
 
         internal IUserIdentity ToUserIdentity()
         {
-            // TODO fw test me
             var userClaim = $"user: {UserName}";
             var appClaim = $"app: {ApplicationName}";
-            var accessClaim = CanWrite ? "access: read" : "access: read/write";
+            var accessClaim = CanWrite ? "access: read/write" : "access: read";
 
             return new UserIdentity(UserName, userClaim, appClaim, accessClaim);
         }
 
-        private class UserIdentity : IUserIdentity
+        internal class UserIdentity : IUserIdentity
         {
             public UserIdentity(string userName, params string[] claims)
             {
