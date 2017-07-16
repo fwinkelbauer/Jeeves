@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Common", "Jeeves.Com
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Core.UnitTests", "Jeeves.Core.UnitTests\Jeeves.Core.UnitTests.csproj", "{EEE1F13A-9774-4863-B0F1-41ABCF98407D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.DataMigration", "Jeeves.DataMigration\Jeeves.DataMigration.csproj", "{CE333D2C-3DB5-44AE-B7C0-F74FB0422341}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jeeves.Host", "Jeeves.Host\Jeeves.Host.csproj", "{373689FB-6F63-4D9B-B6A0-694CEE661CFE}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEE1F13A-9774-4863-B0F1-41ABCF98407D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE333D2C-3DB5-44AE-B7C0-F74FB0422341}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE333D2C-3DB5-44AE-B7C0-F74FB0422341}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE333D2C-3DB5-44AE-B7C0-F74FB0422341}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE333D2C-3DB5-44AE-B7C0-F74FB0422341}.Release|Any CPU.Build.0 = Release|Any CPU
 		{373689FB-6F63-4D9B-B6A0-694CEE661CFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{373689FB-6F63-4D9B-B6A0-694CEE661CFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{373689FB-6F63-4D9B-B6A0-694CEE661CFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
