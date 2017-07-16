@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Jeeves.Common;
 using Nancy.Security;
 
 namespace Jeeves.Core

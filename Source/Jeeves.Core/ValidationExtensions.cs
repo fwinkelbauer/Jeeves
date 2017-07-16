@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jeeves.Common
+namespace Jeeves.Core
 {
     public static class ValidationExtensions
     {

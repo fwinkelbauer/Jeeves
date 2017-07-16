@@ -79,10 +79,6 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jeeves.Common\Jeeves.Common.csproj">
-      <Project>{C46815C9-A251-430E-B339-F5144007257C}</Project>
-      <Name>Jeeves.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jeeves.Core\Jeeves.Core.csproj">
       <Project>{8c13e1ae-879d-48a7-8c51-3fc30cec89ec}</Project>
       <Name>Jeeves.Core</Name>

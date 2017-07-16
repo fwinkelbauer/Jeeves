@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jeeves.Common
+namespace Jeeves.Core
 {
     internal sealed class ValidatedNotNullAttribute : Attribute
     {

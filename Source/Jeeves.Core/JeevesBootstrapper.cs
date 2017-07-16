@@ -1,5 +1,4 @@
-﻿using Jeeves.Common;
-using Nancy;
+﻿using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.TinyIoc;
 

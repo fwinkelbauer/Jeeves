@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.IO;
-using Jeeves.Common;
 using Jeeves.Core;
 
 namespace Jeeves.Host

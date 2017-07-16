@@ -19,8 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Common.dll" target="lib\net45" />
-    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Common.pdb" target="lib\net45" />
     <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Core.dll" target="lib\net45" />
     <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Core.pdb" target="lib\net45" />
   </files>
