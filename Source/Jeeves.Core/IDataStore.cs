@@ -2,9 +2,9 @@
 {
     public interface IDataStore
     {
-        string RetrieveValue(string application, string userName, string key);
+        string RetrieveValue(string userName, string application, string key);
 
-        void PutValue(string application, string userName, string key, string value);
+        void PutValue(string userName, string application, string key, string value);
 
         JeevesUser RetrieveUser(string apikey);
     }

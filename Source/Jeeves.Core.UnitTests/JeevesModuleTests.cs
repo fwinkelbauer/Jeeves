@@ -14,7 +14,7 @@ namespace Jeeves.Core.UnitTests
         {
             var settings = new JeevesSettings(false, true);
             var store = CreateStoreWithUser();
-            store.RetrieveValue("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
+            store.RetrieveValue("admin", "my_app", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
             var response = PerformHttpGetRequest(settings, store, "/get/admin/my_app/my_key", "my_api");
 
@@ -26,7 +26,7 @@ namespace Jeeves.Core.UnitTests
         {
             var settings = new JeevesSettings(true, true);
             var store = CreateStoreWithUser();
-            store.RetrieveValue("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
+            store.RetrieveValue("admin", "my_app", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
             var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
             {
@@ -42,7 +42,7 @@ namespace Jeeves.Core.UnitTests
         {
             var settings = new JeevesSettings(false, false);
             var store = Substitute.For<IDataStore>();
-            store.RetrieveValue("my_app", "admin", "my_key").Returns("{ \"Data\" : \"Foo\" }");
+            store.RetrieveValue("admin", "my_app", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
             var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
             {
@@ -109,7 +109,7 @@ namespace Jeeves.Core.UnitTests
                 with.HttpRequest();
             });
 
-            store.Received().PutValue("my_app", "admin", "my_key", "barbarbar");
+            store.Received().PutValue("admin", "my_app", "my_key", "barbarbar");
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 
@@ -125,7 +125,7 @@ namespace Jeeves.Core.UnitTests
                 with.HttpRequest();
             });
 
-            store.Received().PutValue("my_app", "admin", "my_key", "barbarbar");
+            store.Received().PutValue("admin", "my_app", "my_key", "barbarbar");
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 

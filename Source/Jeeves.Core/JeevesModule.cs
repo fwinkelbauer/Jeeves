@@ -60,8 +60,8 @@ namespace Jeeves.Core
                 }
 
                 var value = _store.RetrieveValue(
-                    parameters.application,
                     parameters.user,
+                    parameters.application,
                     parameters.key);
 
                 if (string.IsNullOrEmpty(value))
@@ -87,8 +87,8 @@ namespace Jeeves.Core
                 }
 
                 _store.PutValue(
-                    parameters.application,
                     parameters.user,
+                    parameters.application,
                     parameters.key,
                     request.Value);
 

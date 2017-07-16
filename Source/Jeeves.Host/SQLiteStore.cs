@@ -13,15 +13,15 @@ namespace Jeeves.Host
         private const string SelectConfigurationQuery = @"
 SELECT Value
 FROM Configuration
-WHERE Application = @App
-AND (UserName = @User OR UserName = '')
+WHERE (UserName = @User OR UserName = '')
+AND Application = @App
 AND Key = @Key
 ORDER BY UserName DESC, ID DESC
 LIMIT 1;";
 
         private const string InsertConfigurationQuery = @"
-INSERT INTO Configuration (Application, UserName, Key, Value)
-VALUES (@App, @User, @Key, @Value);";
+INSERT INTO Configuration (UserName, Application, Key, Value)
+VALUES (@User, @App, @Key, @Value);";
 
         private const string SelectUserQuery = @"
 SELECT UserName, Application, CanWrite
@@ -37,7 +37,7 @@ WHERE Apikey = @Apikey;";
             _connectionString = $"Data Source = {database.ThrowIfNull(nameof(database))}";
         }
 
-        public string RetrieveValue(string application, string userName, string key)
+        public string RetrieveValue(string userName, string application, string key)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             using (var cmd = new SQLiteCommand(connection))
@@ -46,15 +46,15 @@ WHERE Apikey = @Apikey;";
 
                 cmd.CommandText = SelectConfigurationQuery;
 
-                cmd.Parameters.AddWithValue("@App", application);
                 cmd.Parameters.AddWithValue("@User", userName);
+                cmd.Parameters.AddWithValue("@App", application);
                 cmd.Parameters.AddWithValue("@Key", key);
 
                 return (string)cmd.ExecuteScalar();
             }
         }
 
-        public void PutValue(string application, string userName, string key, string value)
+        public void PutValue(string userName, string application, string key, string value)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             using (var cmd = new SQLiteCommand(connection))
@@ -63,8 +63,8 @@ WHERE Apikey = @Apikey;";
 
                 cmd.CommandText = InsertConfigurationQuery;
 
-                cmd.Parameters.AddWithValue("@App", application);
                 cmd.Parameters.AddWithValue("@User", userName);
+                cmd.Parameters.AddWithValue("@App", application);
                 cmd.Parameters.AddWithValue("@Key", key);
                 cmd.Parameters.AddWithValue("@Value", value);
 
