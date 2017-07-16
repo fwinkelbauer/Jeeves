@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using Nancy.Authentication.Stateless;
+using Nancy.ModelBinding;
 using Nancy.Security;
 
 namespace Jeeves.Core
@@ -70,6 +71,38 @@ namespace Jeeves.Core
 
                 return (Response)value;
             };
+
+            Post["/post/{user}/{application}/{key}"] = parameters =>
+            {
+                if (_settings.UseAuthentication)
+                {
+                    this.RequiresClaims($"user: {parameters.user}", $"app: {parameters.application}", "access: read/write");
+                }
+
+                var request = this.Bind<PostKeyRequest>();
+
+                if (string.IsNullOrEmpty(request.Value))
+                {
+                    return HttpStatusCode.BadRequest;
+                }
+
+                _store.PutValue(
+                    parameters.application,
+                    parameters.user,
+                    parameters.key,
+                    request.Value);
+
+                return HttpStatusCode.OK;
+            };
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance",
+            "CA1812:AvoidUninstantiatedInternalClasses",
+            Justification = "Class is used in POST route (model binding)")]
+        private class PostKeyRequest
+        {
+            public string Value { get; set; }
         }
     }
 }

@@ -11,16 +11,22 @@ namespace Jeeves.Host
         #region Queries
 
         private const string SelectConfigurationQuery = @"
-SELECT Value FROM Configuration
+SELECT Value
+FROM Configuration
 WHERE Application = @App
-AND (UserName = @UserName OR UserName = '')
+AND (UserName = @User OR UserName = '')
 AND Key = @Key
 ORDER BY UserName DESC, ID DESC
-LIMIT 1";
+LIMIT 1;";
+
+        private const string InsertConfigurationQuery = @"
+INSERT INTO Configuration (Application, UserName, Key, Value)
+VALUES (@App, @User, @Key, @Value);";
 
         private const string SelectUserQuery = @"
-SELECT UserName, Application, CanWrite FROM User
-WHERE Apikey = @Apikey";
+SELECT UserName, Application, CanWrite
+FROM User
+WHERE Apikey = @Apikey;";
 
         #endregion
 
@@ -41,10 +47,28 @@ WHERE Apikey = @Apikey";
                 cmd.CommandText = SelectConfigurationQuery;
 
                 cmd.Parameters.AddWithValue("@App", application);
-                cmd.Parameters.AddWithValue("@UserName", userName);
+                cmd.Parameters.AddWithValue("@User", userName);
                 cmd.Parameters.AddWithValue("@Key", key);
 
                 return (string)cmd.ExecuteScalar();
+            }
+        }
+
+        public void PutValue(string application, string userName, string key, string value)
+        {
+            using (var connection = new SQLiteConnection(_connectionString))
+            using (var cmd = new SQLiteCommand(connection))
+            {
+                connection.Open();
+
+                cmd.CommandText = InsertConfigurationQuery;
+
+                cmd.Parameters.AddWithValue("@App", application);
+                cmd.Parameters.AddWithValue("@User", userName);
+                cmd.Parameters.AddWithValue("@Key", key);
+                cmd.Parameters.AddWithValue("@Value", value);
+
+                cmd.ExecuteNonQuery();
             }
         }
 
