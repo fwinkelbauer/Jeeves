@@ -20,7 +20,7 @@ namespace Jeeves.Host
 
         private static void MigrateDatabase(FileInfo database)
         {
-            WriteColorLine("Migrating database", ConsoleColor.Magenta);
+            WriteColorLine($"Preparing database '{database}'", ConsoleColor.Magenta);
 
             var connectionString = $"Data Source = {database}";
 
@@ -52,7 +52,7 @@ namespace Jeeves.Host
             var store = new SQLiteStore(database);
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
 
-            WriteColorLine($"Starting Jeeves on {url}", ConsoleColor.Magenta);
+            WriteColorLine($"Starting Jeeves on '{url}'", ConsoleColor.Magenta);
 
             using (var host = new JeevesHost(settings, store, new Uri(url)))
             {
