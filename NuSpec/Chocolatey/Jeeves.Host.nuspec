@@ -11,7 +11,7 @@
     <bugTrackerUrl>https://github.com/fwinkelbauer/Jeeves/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/fwinkelbauer/Jeeves/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <summary>A standalone configuration store web service.</summary>
+    <summary>A standalone configuration store web service</summary>
     <description>Jeeves.Host is a self contained web service which serves a configuration store through a REST API.</description>
     <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
     <tags>Configuration Service</tags>

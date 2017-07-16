@@ -1,11 +1,46 @@
 # Jeeves
 
-A REST API for a key/value store interface.
+Jeeves is a standalone web services which provides a REST API used to read/write configuration data from a data source.
+
+## Usage
+
+Jeeves offers two routes:
+
+### Retrieve Configuration Data
+
+- **Basic schema:** `/get/{user}/{application}/{key}`
+- **Examples:**
+
+```
+# No authentication
+curl http://localhost:9042/jeeves/get/my_user/my_application/some_key
+
+# With authentication
+curl http://localhost:9042/jeeves/get/my_user/my_application/some_key?apikey=some_apikey
+```
+
+### Write Configuration Data
+
+- **Basic schema:** `/post/{user}/{application}/{key}`
+- **Examples:**
+
+```
+# No authentication
+curl http://localhost:9042/jeeves/post/my_user/my_application/some_key --data "value=foo"
+
+# With authentication
+curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=some_apikey --data "value=foo"
+```
+
+## Projects
+
+- **Jeeves.Core:** The basic template to create a REST API for any data store
+- **Jeeves.Host:** An example implementation of **Jeeves.Core** using SQLite
 
 ## How To Implement A Custom Jeeves Host
 
 - Add the NuGet package `Jeeves.Core` to your project
-- Create an implementation of `Jeeves.Core.IDataStore`
+- Create an implementation of `Jeeves.Core.IDataStore`. This interface is used to authenticate an API call, as well as to provide access to the actual stored configuration data
 - Instantiate and start your own host like this:
 
 ```csharp

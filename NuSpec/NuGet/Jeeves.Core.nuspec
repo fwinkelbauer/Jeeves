@@ -8,7 +8,7 @@
     <projectUrl>https://github.com/fwinkelbauer/Jeeves</projectUrl>
     <licenseUrl>https://github.com/fwinkelbauer/Jeeves/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <summary>A template to create a standalone configuration store web service.</summary>
+    <summary>A template to create a standalone configuration store web service</summary>
     <description>Jeeves.Core is a self contained web service which serves your own implementation of a configuration store through a REST API.</description>
     <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
     <tags>Configuration Service</tags>
