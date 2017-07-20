@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Packages\LibLog.4.2\LibLog.cs" />
     <Compile Include="JeevesBootstrapper.cs" />
     <Compile Include="JeevesHost.cs" />
     <Compile Include="JeevesSettings.cs" />

@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using Jeeves.Core.Logging;
+using Nancy;
 using Nancy.Authentication.Stateless;
 using Nancy.ModelBinding;
 using Nancy.Security;
@@ -7,6 +8,8 @@ namespace Jeeves.Core
 {
     internal class JeevesModule : NancyModule
     {
+        private static readonly ILog Log = LogProvider.For<JeevesModule>();
+
         private readonly JeevesSettings _settings;
         private readonly IDataStore _store;
 
@@ -39,10 +42,15 @@ namespace Jeeves.Core
             {
                 if (!ctx.Request.Query.apikey.HasValue)
                 {
+                    Log.Debug("Authentication failed: no API key provided");
                     return null;
                 }
 
-                return _store.RetrieveUser(ctx.Request.Query.apikey).ToUserIdentity();
+                IUserIdentity user = _store.RetrieveUser(ctx.Request.Query.apikey).ToUserIdentity();
+
+                Log.DebugFormat("Authenticated user: {user}", user.UserName);
+
+                return user;
             });
 
             StatelessAuthentication.Enable(this, configuration);
@@ -53,44 +61,69 @@ namespace Jeeves.Core
         {
             Get["/get/{user}/{application}/{key}"] = parameters =>
             {
+                string user = parameters.user;
+                string application = parameters.application;
+                string key = parameters.key;
+
                 if (_settings.UseAuthentication)
                 {
-                    this.RequiresClaims($"user: {parameters.user}", $"app: {parameters.application}");
+                    this.RequiresClaims($"user: {user}", $"app: {application}");
                     this.RequiresAnyClaim("access: read", "access: read/write");
                 }
 
-                var value = _store.RetrieveValue(
-                    parameters.user,
-                    parameters.application,
-                    parameters.key);
+                var value = _store.RetrieveValue(user, application, key);
 
                 if (string.IsNullOrEmpty(value))
                 {
+                    Log.DebugFormat(
+                        "No data found for request /get/{user}/{application}/{key}",
+                        user,
+                        application,
+                        key);
+
                     return HttpStatusCode.NoContent;
                 }
+
+                Log.DebugFormat(
+                        "Returning value for request /get/{user}/{application}/{key}",
+                        user,
+                        application,
+                        key);
 
                 return (Response)value;
             };
 
             Post["/post/{user}/{application}/{key}"] = parameters =>
             {
+                string user = parameters.user;
+                string application = parameters.application;
+                string key = parameters.key;
+
                 if (_settings.UseAuthentication)
                 {
-                    this.RequiresClaims($"user: {parameters.user}", $"app: {parameters.application}", "access: read/write");
+                    this.RequiresClaims($"user: {user}", $"app: {application}", "access: read/write");
                 }
 
                 var request = this.Bind<PostKeyRequest>();
 
                 if (string.IsNullOrEmpty(request.Value))
                 {
+                    Log.DebugFormat(
+                        "No value provided for /post/{user}/{application}/{key}",
+                        user,
+                        application,
+                        key);
+
                     return HttpStatusCode.BadRequest;
                 }
 
-                _store.PutValue(
-                    parameters.user,
-                    parameters.application,
-                    parameters.key,
-                    request.Value);
+                _store.PutValue(user, application, key, request.Value);
+
+                Log.DebugFormat(
+                        "Stored value for /post/{user}/{application}/{key}",
+                        user,
+                        application,
+                        key);
 
                 return HttpStatusCode.OK;
             };

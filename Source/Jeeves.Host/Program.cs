@@ -2,8 +2,10 @@
 using System.IO;
 using System.Reflection;
 using DbUp;
+using DbUp.Engine.Output;
 using Jeeves.Core;
 using Jeeves.Host.Properties;
+using Serilog;
 
 namespace Jeeves.Host
 {
@@ -11,48 +13,60 @@ namespace Jeeves.Host
     {
         public static void Main()
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.Seq("http://127.0.0.1:5341")
+                .CreateLogger();
+
             var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var database = new FileInfo(Path.Combine(userFolder, "Jeeves.sqlite"));
 
-            MigrateDatabase(database);
-            StartServer(database);
+            try
+            {
+                MigrateDatabase(database);
+                RunServer(database);
+                Log.CloseAndFlush();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "An error occurred");
+                Log.CloseAndFlush();
+                Environment.Exit(2);
+            }
         }
 
         private static void MigrateDatabase(FileInfo database)
         {
-            WriteColorLine($"Preparing database '{database}'", ConsoleColor.Magenta);
+            Log.Debug("Preparing database {database}", database);
 
             var connectionString = $"Data Source = {database}";
 
             var upgrader = DeployChanges.To
                 .SQLiteDatabase(connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                .LogToConsole()
+                .LogTo(new DbUpLog())
                 .Build();
 
             var result = upgrader.PerformUpgrade();
 
             if (result.Successful)
             {
-                WriteColorLine("Finished migration!", ConsoleColor.Green);
+                Log.Debug("Finished migration!");
             }
             else
             {
-                WriteColorLine(result.Error.Message, ConsoleColor.Red);
-                Console.WriteLine("Press ENTER to exit");
-                Console.ReadLine();
-
-                Environment.Exit(2);
+                throw result.Error;
             }
         }
 
-        private static void StartServer(FileInfo database)
+        private static void RunServer(FileInfo database)
         {
             var url = Settings.Default.BaseUrl;
             var store = new SQLiteStore(database);
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
 
-            WriteColorLine($"Starting Jeeves on '{url}'", ConsoleColor.Magenta);
+            Log.Information("Starting Jeeves on {url}", url);
 
             using (var host = new JeevesHost(settings, store, new Uri(url)))
             {
@@ -62,13 +76,30 @@ namespace Jeeves.Host
             }
         }
 
-        private static void WriteColorLine(string line, ConsoleColor color)
+        private class DbUpLog : IUpgradeLog
         {
-            var tmp = Console.ForegroundColor;
+            private readonly ILogger _log;
 
-            Console.ForegroundColor = color;
-            Console.WriteLine(line);
-            Console.ForegroundColor = tmp;
+            public DbUpLog()
+            {
+                _log = Log.ForContext("SourceContext", "DbUp");
+            }
+
+            public void WriteError(string format, params object[] args)
+            {
+                _log.Error(format, args);
+            }
+
+            public void WriteInformation(string format, params object[] args)
+            {
+                // I am using a "lower" log level by choice
+                _log.Debug(format, args);
+            }
+
+            public void WriteWarning(string format, params object[] args)
+            {
+                _log.Warning(format, args);
+            }
         }
     }
 }
