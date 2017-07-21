@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Jeeves.Core
 {
+    [DebuggerStepThrough]
     public static class ValidationExtensions
     {
-        public static T ThrowIfNull<T>([ValidatedNotNull] this T t, string paramName)
+        internal static T ThrowIfNull<T>([ValidatedNotNull] this T t, string paramName)
             where T : class
         {
             if (t == null)

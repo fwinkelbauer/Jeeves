@@ -1,4 +1,4 @@
-﻿using Jeeves.Core.Logging;
+﻿using System;
 using Nancy;
 using Nancy.Authentication.Stateless;
 using Nancy.ModelBinding;
@@ -8,15 +8,15 @@ namespace Jeeves.Core
 {
     internal class JeevesModule : NancyModule
     {
-        private static readonly ILog Log = LogProvider.For<JeevesModule>();
-
         private readonly JeevesSettings _settings;
         private readonly IDataStore _store;
+        private readonly IJeevesLog _log;
 
-        public JeevesModule(JeevesSettings settings, IDataStore store)
+        public JeevesModule(JeevesSettings settings, IDataStore store, IJeevesLog log)
         {
             _settings = settings;
             _store = store;
+            _log = log;
 
             ConfigureSecurity();
             ConfigureAuthentication();
@@ -42,15 +42,30 @@ namespace Jeeves.Core
             {
                 if (!ctx.Request.Query.apikey.HasValue)
                 {
-                    Log.Debug("Authentication failed: no API key provided");
+                    _log.DebugFormat("Authentication failed: no API key provided");
                     return null;
                 }
 
-                IUserIdentity user = _store.RetrieveUser(ctx.Request.Query.apikey).ToUserIdentity();
+                JeevesUser user = null;
 
-                Log.DebugFormat("Authenticated user: {user}", user.UserName);
+                try
+                {
+                    user = _store.RetrieveUser(ctx.Request.Query.apikey);
+                }
+                catch (Exception e)
+                {
+                    _log.ErrorFormat(e, "Authentication failed");
+                    throw;
+                }
 
-                return user;
+                if (user == null)
+                {
+                    _log.DebugFormat("Authentication failed: user not found (null)");
+                    return null;
+                }
+
+                _log.DebugFormat("Authenticated user: {user}", user.UserName);
+                return user.ToUserIdentity();
             });
 
             StatelessAuthentication.Enable(this, configuration);
@@ -71,24 +86,16 @@ namespace Jeeves.Core
                     this.RequiresAnyClaim("access: read", "access: read/write");
                 }
 
-                var value = _store.RetrieveValue(user, application, key);
+                string value = _store.RetrieveValue(user, application, key);
 
                 if (string.IsNullOrEmpty(value))
                 {
-                    Log.DebugFormat(
-                        "No data found for request /get/{user}/{application}/{key}",
-                        user,
-                        application,
-                        key);
+                    _log.DebugFormat("No data found for request /get/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.NoContent;
                 }
 
-                Log.DebugFormat(
-                        "Returning value for request /get/{user}/{application}/{key}",
-                        user,
-                        application,
-                        key);
+                _log.DebugFormat("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
 
                 return (Response)value;
             };
@@ -108,22 +115,14 @@ namespace Jeeves.Core
 
                 if (string.IsNullOrEmpty(request.Value))
                 {
-                    Log.DebugFormat(
-                        "No value provided for /post/{user}/{application}/{key}",
-                        user,
-                        application,
-                        key);
+                    _log.DebugFormat("No value provided for request /post/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.BadRequest;
                 }
 
                 _store.PutValue(user, application, key, request.Value);
 
-                Log.DebugFormat(
-                        "Stored value for /post/{user}/{application}/{key}",
-                        user,
-                        application,
-                        key);
+                _log.DebugFormat("Stored value for request /post/{user}/{application}/{key}", user, application, key);
 
                 return HttpStatusCode.OK;
             };

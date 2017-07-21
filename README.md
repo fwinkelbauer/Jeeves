@@ -44,12 +44,12 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=so
 - Instantiate and start your own host like this:
 
 ```csharp
-IDataStore store = null; // Provide your implementation here
-var settings = new JeevesSettings(false, false); // Configure these parameters however you like
 var baseUrl = "http://localhost:9042/jeeves/"; // Define the base URL
+var settings = new JeevesSettings(false, false); // Configure these parameters however you like
+IDataStore store = null; // Provide your implementation here
+IJeeves log = null; // Provde your log implementation here
 
-// Start
-using (var host = new JeevesHost(settings, store, new Uri(baseUrl)))
+using (var host = new JeevesHost(new Uri(baseUrl), settings, store, log))
 {
     host.Start();
     Console.WriteLine("Press ENTER to exit");

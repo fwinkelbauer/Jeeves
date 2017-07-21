@@ -196,7 +196,7 @@ namespace Jeeves.Core.UnitTests
 
         private BrowserResponse PerformRequest(JeevesSettings settings, IDataStore store, Func<Browser, BrowserResponse> request)
         {
-            using (var boot = new JeevesBootstrapper(settings, store))
+            using (var boot = new JeevesBootstrapper(settings, store, Substitute.For<IJeevesLog>()))
             {
                 var browser = new Browser(boot);
 

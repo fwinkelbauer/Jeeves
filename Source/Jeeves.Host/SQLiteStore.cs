@@ -33,7 +33,7 @@ WHERE Apikey = @Apikey;";
 
         public SQLiteStore(FileInfo database)
         {
-            _connectionString = $"Data Source = {database.ThrowIfNull(nameof(database))}";
+            _connectionString = $"Data Source = {database}";
         }
 
         public string RetrieveValue(string userName, string application, string key)

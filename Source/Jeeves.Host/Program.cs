@@ -63,12 +63,13 @@ namespace Jeeves.Host
         private static void RunServer(FileInfo database)
         {
             var url = Settings.Default.BaseUrl;
-            var store = new SQLiteStore(database);
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
+            var store = new SQLiteStore(database);
+            var log = new JeevesLog();
 
             Log.Information("Starting Jeeves on {url}", url);
 
-            using (var host = new JeevesHost(settings, store, new Uri(url)))
+            using (var host = new JeevesHost(new Uri(url), settings, store, log))
             {
                 host.Start();
                 Console.WriteLine("Press ENTER to exit");
@@ -78,12 +79,7 @@ namespace Jeeves.Host
 
         private class DbUpLog : IUpgradeLog
         {
-            private readonly ILogger _log;
-
-            public DbUpLog()
-            {
-                _log = Log.ForContext("SourceContext", "DbUp");
-            }
+            private readonly ILogger _log = Log.ForContext("SourceContext", "DbUp");
 
             public void WriteError(string format, params object[] args)
             {
@@ -99,6 +95,21 @@ namespace Jeeves.Host
             public void WriteWarning(string format, params object[] args)
             {
                 _log.Warning(format, args);
+            }
+        }
+
+        private class JeevesLog : IJeevesLog
+        {
+            private readonly ILogger _log = Log.ForContext("SourceContext", "Jeeves.Core");
+
+            public void DebugFormat(string format, params object[] values)
+            {
+                _log.Debug(format, values);
+            }
+
+            public void ErrorFormat(Exception ex, string format, params object[] values)
+            {
+                _log.Error(ex, format, values);
             }
         }
     }
