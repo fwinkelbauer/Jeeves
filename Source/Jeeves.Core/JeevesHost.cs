@@ -34,5 +34,10 @@ namespace Jeeves.Core
         {
             _host.Start();
         }
+
+        public void Stop()
+        {
+            _host.Stop();
+        }
     }
 }

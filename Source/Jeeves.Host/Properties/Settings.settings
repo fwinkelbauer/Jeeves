@@ -11,5 +11,8 @@
     <Setting Name="UseAuthentication" Type="System.Boolean" Scope="Application">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="SeqUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://127.0.0.1:5341</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
