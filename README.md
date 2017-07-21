@@ -43,13 +43,14 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=so
 
 - Add the NuGet package `Jeeves.Core` to your project
 - Create an implementation of `Jeeves.Core.IDataStore`. This interface is used to authenticate an API call, as well as to provide access to the actual stored configuration data
+- Create an implementation of `Jeeves.Core.IJeevesLog`. The simplest approach would mean that you create a barebones class which does nothing
 - Instantiate and start your own host like this:
 
 ```csharp
 var baseUrl = "http://localhost:9042/jeeves/"; // Define the base URL
 var settings = new JeevesSettings(false, false); // Configure these parameters however you like
 IDataStore store = null; // Provide your implementation here
-IJeeves log = null; // Provde your log implementation here
+IJeevesLog log = null; // Provde your log implementation here
 
 using (var host = new JeevesHost(new Uri(baseUrl), settings, store, log))
 {
