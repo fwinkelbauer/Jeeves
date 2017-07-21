@@ -39,7 +39,7 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=so
 
 ## How To Implement A Custom Jeeves Host
 
-**Note:** The NuGet package `Jeeves.Core` has not been published yet. But you can build one on your own by running the build script `Source\build.ps1`.
+**Note:** The NuGet package `Jeeves.Core` has not been published yet, but you can build one on your own by running the build script `Source\build.ps1`.
 
 - Add the NuGet package `Jeeves.Core` to your project
 - Create an implementation of `Jeeves.Core.IDataStore`. This interface is used to authenticate an API call, as well as to provide access to the actual stored configuration data
