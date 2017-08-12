@@ -60,6 +60,13 @@ using (var host = new JeevesHost(new Uri(baseUrl), settings, store, log))
 }
 ```
 
+## Configure Jeeves.Host
+
+The example implementation of **Jeeves.Core** can be configured using two environment variables:
+
+- **JEEVES_DATABASE:** A new file path for the sqlite database (default: `<USER_FOLDER>/Jeeves.Sqlite`)
+- **JEEVES_SCRIPTS:** A folder which contains SQL scripts. These scripts can be used to do your own version control of the database (see [DbUp](https://dbup.github.io/) for more information)
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)

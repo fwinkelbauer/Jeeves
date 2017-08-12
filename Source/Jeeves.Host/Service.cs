@@ -49,11 +49,19 @@ namespace Jeeves.Host
 
             var connectionString = $"Data Source = {_database}";
 
-            var upgrader = DeployChanges.To
+            var dbUpBuilder = DeployChanges.To
                 .SQLiteDatabase(connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                .LogTo(new DbUpLog())
-                .Build();
+                .LogTo(new DbUpLog());
+
+            var envScripts = Environment.GetEnvironmentVariable("JEEVES_SCRIPTS");
+
+            if (envScripts != null)
+            {
+                dbUpBuilder.WithScriptsFromFileSystem(envScripts);
+            }
+
+            var upgrader = dbUpBuilder.Build();
 
             var result = upgrader.PerformUpgrade();
 

@@ -17,8 +17,7 @@ namespace Jeeves.Host
                 .WriteTo.Seq(Settings.Default.SeqUrl)
                 .CreateLogger();
 
-            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var database = new FileInfo(Path.Combine(userFolder, "Jeeves.sqlite"));
+            var database = GetDatabasePath();
             var url = Settings.Default.BaseUrl;
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
 
@@ -40,6 +39,20 @@ namespace Jeeves.Host
             });
 
             Log.CloseAndFlush();
+        }
+
+        private static FileInfo GetDatabasePath()
+        {
+            var envPath = Environment.GetEnvironmentVariable("JEEVES_DATABASE");
+
+            if (envPath != null)
+            {
+                return new FileInfo(envPath);
+            }
+
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+            return new FileInfo(Path.Combine(userFolder, "Jeeves.sqlite"));
         }
     }
 }
