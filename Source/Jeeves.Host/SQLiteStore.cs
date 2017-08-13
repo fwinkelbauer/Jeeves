@@ -1,6 +1,6 @@
-﻿using System;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using System.IO;
+using Dapper;
 using Jeeves.Core;
 
 namespace Jeeves.Host
@@ -39,62 +39,30 @@ WHERE Apikey = @Apikey;";
         public string RetrieveValue(string userName, string application, string key)
         {
             using (var connection = new SQLiteConnection(_connectionString))
-            using (var cmd = new SQLiteCommand(connection))
             {
                 connection.Open();
 
-                cmd.CommandText = SelectConfigurationQuery;
-
-                cmd.Parameters.AddWithValue("@User", userName);
-                cmd.Parameters.AddWithValue("@App", application);
-                cmd.Parameters.AddWithValue("@Key", key);
-
-                return (string)cmd.ExecuteScalar();
+                return connection.QueryFirst<string>(SelectConfigurationQuery, new { User = userName, App = application, Key = key });
             }
         }
 
         public void PutValue(string userName, string application, string key, string value)
         {
             using (var connection = new SQLiteConnection(_connectionString))
-            using (var cmd = new SQLiteCommand(connection))
             {
                 connection.Open();
 
-                cmd.CommandText = InsertConfigurationQuery;
-
-                cmd.Parameters.AddWithValue("@User", userName);
-                cmd.Parameters.AddWithValue("@App", application);
-                cmd.Parameters.AddWithValue("@Key", key);
-                cmd.Parameters.AddWithValue("@Value", value);
-
-                cmd.ExecuteNonQuery();
+                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value });
             }
         }
 
         public JeevesUser RetrieveUser(string apikey)
         {
             using (var connection = new SQLiteConnection(_connectionString))
-            using (var cmd = new SQLiteCommand(connection))
             {
                 connection.Open();
 
-                cmd.CommandText = SelectUserQuery;
-
-                cmd.Parameters.AddWithValue("@Apikey", apikey);
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        var userName = reader["UserName"].ToString();
-                        var applicationName = reader["Application"].ToString();
-                        var canWrite = Convert.ToBoolean(reader["CanWrite"]);
-
-                        return new JeevesUser(userName, applicationName, canWrite);
-                    }
-
-                    return null;
-                }
+                return connection.QueryFirst<JeevesUser>(SelectUserQuery, new { Apikey = apikey });
             }
         }
     }

@@ -5,18 +5,11 @@ namespace Jeeves.Core
 {
     public class JeevesUser
     {
-        public JeevesUser(string userName, string applicationName, bool canWrite)
-        {
-            UserName = userName.ThrowIfNull(nameof(userName));
-            ApplicationName = applicationName.ThrowIfNull(nameof(applicationName));
-            CanWrite = canWrite;
-        }
+        public string UserName { get; set; }
 
-        public string UserName { get; }
+        public string Application { get; set; }
 
-        public string ApplicationName { get; }
-
-        public bool CanWrite { get; }
+        public bool CanWrite { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -28,7 +21,7 @@ namespace Jeeves.Core
             }
 
             return UserName.Equals(user.UserName)
-                && ApplicationName.Equals(user.ApplicationName)
+                && Application.Equals(user.Application)
                 && CanWrite == user.CanWrite;
         }
 
@@ -39,13 +32,13 @@ namespace Jeeves.Core
 
         public override string ToString()
         {
-            return $"User: {UserName}, App: {ApplicationName}, Write: {CanWrite}";
+            return $"User: {UserName}, App: {Application}, Write: {CanWrite}";
         }
 
         internal IUserIdentity ToUserIdentity()
         {
             var userClaim = $"user: {UserName}";
-            var appClaim = $"app: {ApplicationName}";
+            var appClaim = $"app: {Application}";
             var accessClaim = CanWrite ? "access: read/write" : "access: read";
 
             return new UserIdentity(UserName, userClaim, appClaim, accessClaim);
