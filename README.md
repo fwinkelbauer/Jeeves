@@ -36,6 +36,7 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=so
 
 - **Jeeves.Core:** The basic template to create a REST API for any data store
 - **Jeeves.Host:** An example implementation of **Jeeves.Core** using SQLite
+  - This project can be configured using the `Jeeves.Host.exe.config` file
 
 ## How To Implement A Custom Jeeves Host
 
@@ -59,13 +60,6 @@ using (var host = new JeevesHost(new Uri(baseUrl), settings, store, log))
     Console.ReadLine();
 }
 ```
-
-## Configure Jeeves.Host
-
-The example implementation of **Jeeves.Core** can be configured using two environment variables:
-
-- **JEEVES_DATABASE:** A new file path for the sqlite database (default: `<USER_FOLDER>/Jeeves.Sqlite`)
-- **JEEVES_SCRIPTS:** A folder which contains SQL scripts. These scripts can be used to do your own version control of the database (see [DbUp](https://dbup.github.io/) for more information)
 
 ## License
 

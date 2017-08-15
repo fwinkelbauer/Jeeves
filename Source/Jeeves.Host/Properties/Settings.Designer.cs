@@ -49,13 +49,31 @@ namespace Jeeves.Host.Properties {
                 return ((bool)(this["UseAuthentication"]));
             }
         }
-
+        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://127.0.0.1:5341")]
         public string SeqUrl {
             get {
                 return ((string)(this["SeqUrl"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%USERPROFILE%/Jeeves.sqlite")]
+        public string Database {
+            get {
+                return ((string)(this["Database"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SqlScriptsFolder {
+            get {
+                return ((string)(this["SqlScriptsFolder"]));
             }
         }
     }

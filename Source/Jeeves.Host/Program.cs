@@ -17,7 +17,7 @@ namespace Jeeves.Host
                 .WriteTo.Seq(Settings.Default.SeqUrl)
                 .CreateLogger();
 
-            var database = GetDatabasePath();
+            var database = new FileInfo(Environment.ExpandEnvironmentVariables(Settings.Default.Database));
             var url = Settings.Default.BaseUrl;
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
 
@@ -25,7 +25,7 @@ namespace Jeeves.Host
             {
                 hc.Service<Service>(sc =>
                 {
-                    sc.ConstructUsing(() => new Service(database, url, settings));
+                    sc.ConstructUsing(() => new Service(database, url, settings, Settings.Default.SqlScriptsFolder));
                     sc.WhenStarted(s => s.Start());
                     sc.WhenStopped(s =>
                     {
@@ -39,20 +39,6 @@ namespace Jeeves.Host
             });
 
             Log.CloseAndFlush();
-        }
-
-        private static FileInfo GetDatabasePath()
-        {
-            var envPath = Environment.GetEnvironmentVariable("JEEVES_DATABASE");
-
-            if (envPath != null)
-            {
-                return new FileInfo(envPath);
-            }
-
-            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-
-            return new FileInfo(Path.Combine(userFolder, "Jeeves.sqlite"));
         }
     }
 }

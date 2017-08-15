@@ -15,12 +15,14 @@ namespace Jeeves.Host
         private readonly FileInfo _database;
         private readonly Uri _baseUrl;
         private readonly JeevesHost _host;
+        private readonly string _sqlScriptsFolder;
 
-        public Service(FileInfo database, string url, JeevesSettings settings)
+        public Service(FileInfo database, string url, JeevesSettings settings, string sqlScriptsFolder)
         {
             _database = database;
             _baseUrl = new Uri(url);
             _host = new JeevesHost(_baseUrl, settings, new SQLiteStore(database), new JeevesLog());
+            _sqlScriptsFolder = sqlScriptsFolder;
         }
 
         public void Dispose()
@@ -54,11 +56,9 @@ namespace Jeeves.Host
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
                 .LogTo(new DbUpLog());
 
-            var envScripts = Environment.GetEnvironmentVariable("JEEVES_SCRIPTS");
-
-            if (envScripts != null)
+            if (Directory.Exists(_sqlScriptsFolder))
             {
-                dbUpBuilder.WithScriptsFromFileSystem(envScripts);
+                dbUpBuilder.WithScriptsFromFileSystem(_sqlScriptsFolder);
             }
 
             var upgrader = dbUpBuilder.Build();
