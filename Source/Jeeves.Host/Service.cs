@@ -11,8 +11,9 @@ namespace Jeeves.Host
 {
     internal sealed class Service : IDisposable
     {
-        private static readonly object _lock = new object();
-        private static readonly ILogger _log = Log.ForContext<Service>();
+        private static readonly object Lock = new object();
+
+        private readonly ILogger _log = Log.ForContext<Service>();
 
         private readonly FileInfo _database;
         private readonly Uri _baseUrl;
@@ -36,7 +37,7 @@ namespace Jeeves.Host
         {
             new Thread(() =>
             {
-                lock (_lock)
+                lock (Lock)
                 {
                     _log.Information("Starting Jeeves");
                     MigrateDatabase();
@@ -48,7 +49,7 @@ namespace Jeeves.Host
 
         public void Stop()
         {
-            lock (_lock)
+            lock (Lock)
             {
                 _log.Information("Stopping web service on {url}", _baseUrl);
                 _host.Stop();

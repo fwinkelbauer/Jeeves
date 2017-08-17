@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using Jeeves.Core;
 using Jeeves.Host.Properties;
 using Serilog;
