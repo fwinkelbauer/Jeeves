@@ -61,7 +61,7 @@ namespace Jeeves.Host.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("%USERPROFILE%/Jeeves.sqlite")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Jeeves.sqlite")]
         public string Database {
             get {
                 return ((string)(this["Database"]));

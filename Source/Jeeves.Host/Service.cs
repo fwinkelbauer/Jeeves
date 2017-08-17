@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using DbUp;
 using DbUp.Engine.Output;
 using Jeeves.Core;
@@ -32,10 +33,13 @@ namespace Jeeves.Host
 
         public void Start()
         {
-            _log.Information("Starting Jeeves");
-            MigrateDatabase();
-            _log.Information("Starting web service on {url}", _baseUrl);
-            _host.Start();
+            new Thread(() =>
+            {
+                _log.Information("Starting Jeeves");
+                MigrateDatabase();
+                _log.Information("Starting web service on {url}", _baseUrl);
+                _host.Start();
+            }).Start();
         }
 
         public void Stop()

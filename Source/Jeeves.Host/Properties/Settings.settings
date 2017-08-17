@@ -15,7 +15,7 @@
       <Value Profile="(Default)">http://127.0.0.1:5341</Value>
     </Setting>
     <Setting Name="Database" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">%USERPROFILE%/Jeeves.sqlite</Value>
+      <Value Profile="(Default)">C:\Jeeves.sqlite</Value>
     </Setting>
     <Setting Name="SqlScriptsFolder" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
