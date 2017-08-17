@@ -19,5 +19,7 @@
   <files>
     <file src=".\..\..\BuildArtifacts\Output\Jeeves.Host\**\*" target="tools" />
     <file src=".\..\..\LICENSE.txt" target="tools" />
+    <file src=".\chocolateyInstall.ps1" target="tools" />
+    <file src=".\chocolateyUninstall.ps1" target="tools" />
   </files>
 </package>
