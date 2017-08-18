@@ -37,6 +37,8 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=so
 - **Jeeves.Core:** The basic template to create a REST API for any data store
 - **Jeeves.Host:** An example implementation of **Jeeves.Core** using SQLite
   - This project can be configured using the `Jeeves.Host.exe.config` file
+  - The service is installed and starting using the Chocolatey package
+  - Use `jeeves.host.exe migrate` to update the database using DbUp. This can also be done while the service is running
 
 ## How To Implement A Custom Jeeves Host
 
