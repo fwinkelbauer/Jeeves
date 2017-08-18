@@ -1,9 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Threading;
-using DbUp;
-using DbUp.Engine.Output;
 using Jeeves.Core;
 using Serilog;
 
@@ -40,7 +37,7 @@ namespace Jeeves.Host
                 lock (Lock)
                 {
                     _log.Information("Starting Jeeves");
-                    MigrateDatabase();
+                    new CommandMigrate().MigrateDatabase(_database, _sqlScriptsFolder);
                     _log.Information("Starting web service on {url}", _baseUrl);
                     _host.Start();
                 }
@@ -57,61 +54,9 @@ namespace Jeeves.Host
             }
         }
 
-        private void MigrateDatabase()
-        {
-            _log.Debug("Preparing database {database}", _database);
-
-            var connectionString = $"Data Source = {_database}";
-
-            var dbUpBuilder = DeployChanges.To
-                .SQLiteDatabase(connectionString)
-                .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                .LogTo(new DbUpLog());
-
-            if (Directory.Exists(_sqlScriptsFolder))
-            {
-                dbUpBuilder.WithScriptsFromFileSystem(_sqlScriptsFolder);
-            }
-
-            var upgrader = dbUpBuilder.Build();
-
-            var result = upgrader.PerformUpgrade();
-
-            if (result.Successful)
-            {
-                _log.Debug("Finished migration!");
-            }
-            else
-            {
-                _log.Error(result.Error, "Error while migrating database");
-                throw result.Error;
-            }
-        }
-
-        private class DbUpLog : IUpgradeLog
-        {
-            private static readonly ILogger _log = Log.ForContext("SourceContext", "DbUp");
-
-            public void WriteError(string format, params object[] args)
-            {
-                _log.Error(format, args);
-            }
-
-            public void WriteInformation(string format, params object[] args)
-            {
-                // I am using a "lower" log level by choice
-                _log.Debug(format, args);
-            }
-
-            public void WriteWarning(string format, params object[] args)
-            {
-                _log.Warning(format, args);
-            }
-        }
-
         private class JeevesLog : IJeevesLog
         {
-            private static readonly ILogger _log = Log.ForContext("SourceContext", "Jeeves.Core");
+            private readonly ILogger _log = Log.ForContext("SourceContext", "Jeeves.Core");
 
             public void DebugFormat(string format, params object[] values)
             {

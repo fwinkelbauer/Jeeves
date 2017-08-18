@@ -9,7 +9,7 @@ namespace Jeeves.Host
 {
     public static class Program
     {
-        public static void Main()
+        public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -20,12 +20,26 @@ namespace Jeeves.Host
             var database = new FileInfo(Environment.ExpandEnvironmentVariables(Settings.Default.Database));
             var url = Settings.Default.BaseUrl;
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
+            var sqlScriptsFolder = Settings.Default.SqlScriptsFolder;
+
+            if (args != null && args.Length == 1 && args[0].Equals("migrate"))
+            {
+                try
+                {
+                    new CommandMigrate().MigrateDatabase(database, sqlScriptsFolder);
+                    return;
+                }
+                catch (Exception)
+                {
+                    Environment.Exit(1);
+                }
+            }
 
             HostFactory.Run(hc =>
             {
                 hc.Service<Service>(sc =>
                 {
-                    sc.ConstructUsing(() => new Service(database, url, settings, Settings.Default.SqlScriptsFolder));
+                    sc.ConstructUsing(() => new Service(database, url, settings, sqlScriptsFolder));
                     sc.WhenStarted(s => s.Start());
                     sc.WhenStopped(s =>
                     {
