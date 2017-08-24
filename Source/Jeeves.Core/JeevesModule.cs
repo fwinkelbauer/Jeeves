@@ -86,18 +86,27 @@ namespace Jeeves.Core
                     this.RequiresAnyClaim("access: read", "access: read/write");
                 }
 
-                string value = _store.RetrieveValue(user, application, key);
-
-                if (string.IsNullOrEmpty(value))
+                try
                 {
-                    _log.DebugFormat("No data found for request /get/{user}/{application}/{key}", user, application, key);
+                    string value = _store.RetrieveValue(user, application, key);
 
-                    return HttpStatusCode.NoContent;
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        _log.DebugFormat("No data found for request /get/{user}/{application}/{key}", user, application, key);
+
+                        return HttpStatusCode.NoContent;
+                    }
+
+                    _log.DebugFormat("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
+
+                    return (Response)value;
                 }
+                catch (Exception e)
+                {
+                    _log.ErrorFormat(e, "Error while processing request /get/{user}/{application}/{key}", user, application, key);
 
-                _log.DebugFormat("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
-
-                return (Response)value;
+                    return HttpStatusCode.BadRequest;
+                }
             };
 
             Post["/post/{user}/{application}/{key}"] = parameters =>
@@ -120,11 +129,20 @@ namespace Jeeves.Core
                     return HttpStatusCode.BadRequest;
                 }
 
-                _store.PutValue(user, application, key, request.Value);
+                try
+                {
+                    _store.PutValue(user, application, key, request.Value);
 
-                _log.DebugFormat("Stored value for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.DebugFormat("Stored value for request /post/{user}/{application}/{key}", user, application, key);
 
-                return HttpStatusCode.OK;
+                    return HttpStatusCode.OK;
+                }
+                catch (Exception e)
+                {
+                    _log.ErrorFormat(e, "Error while processing request /post/{user}/{application}/{key}", user, application, key);
+
+                    return HttpStatusCode.BadRequest;
+                }
             };
         }
 
