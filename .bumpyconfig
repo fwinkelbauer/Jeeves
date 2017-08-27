@@ -1,7 +1,6 @@
 [assembly]
-Source\Jeeves.Core\AssemblyInfo.cs | UTF-8 = (?<version>\d+\.\d+\.\d+\.\d+)
-Source\Jeeves.Host\AssemblyInfo.cs | UTF-8 = (?<version>\d+\.\d+\.\d+\.\d+)
-Source\Jeeves.Host.Install\Product.wxs = (?<version>\d+\.\d+\.\d+\.\d+)
+Source\Jeeves.Core\**\AssemblyInfo.cs | UTF-8 = (?<version>\d+\.\d+\.\d+\.\d+)
+Source\Jeeves.Host\**\AssemblyInfo.cs | UTF-8 = (?<version>\d+\.\d+\.\d+\.\d+)
 
 [nuspec]
-NuSpec\*.nuspec = <version>(?<version>\d+\.\d+\.\d+)
+NuSpec\**\*.nuspec = <version>(?<version>\d+\.\d+\.\d+)
