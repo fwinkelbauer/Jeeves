@@ -5,11 +5,18 @@ namespace Jeeves.Core
 {
     public class JeevesUser
     {
-        public string UserName { get; set; }
+        public JeevesUser(string userName, string application, bool canWrite)
+        {
+            UserName = userName;
+            Application = application;
+            CanWrite = canWrite;
+        }
 
-        public string Application { get; set; }
+        public string UserName { get; }
 
-        public bool CanWrite { get; set; }
+        public string Application { get; }
+
+        public bool CanWrite { get; }
 
         public override bool Equals(object obj)
         {
