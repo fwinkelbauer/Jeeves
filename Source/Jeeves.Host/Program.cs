@@ -17,7 +17,13 @@ namespace Jeeves.Host
                 .WriteTo.Seq(Settings.Default.SeqUrl)
                 .CreateLogger();
 
-            var database = new FileInfo(Environment.ExpandEnvironmentVariables(Settings.Default.Database));
+            var database = new FileInfo(Settings.Default.Database);
+
+            if (!database.Directory.Exists)
+            {
+                database.Directory.Create();
+            }
+
             var url = Settings.Default.BaseUrl;
             var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
             var sqlScriptsFolder = Settings.Default.SqlScriptsFolder;
