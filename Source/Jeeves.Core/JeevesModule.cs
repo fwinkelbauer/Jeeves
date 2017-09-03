@@ -105,7 +105,7 @@ namespace Jeeves.Core
                 {
                     _log.ErrorFormat(e, "Error while processing request /get/{user}/{application}/{key}", user, application, key);
 
-                    return HttpStatusCode.BadRequest;
+                    return HttpStatusCode.NoContent;
                 }
             };
 
