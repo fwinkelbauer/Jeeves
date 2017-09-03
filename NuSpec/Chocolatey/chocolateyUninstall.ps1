@@ -1,4 +1,4 @@
 $ErrorActionPreference = 'Stop'
 
-& $env:ChocolateyInstall\lib\Jeeves.Host\tools\Jeeves.Host.exe stop
-& $env:ChocolateyInstall\lib\Jeeves.Host\tools\Jeeves.Host.exe uninstall
+& $env:ChocolateyInstall\lib\Jeeves\tools\Jeeves.exe stop
+& $env:ChocolateyInstall\lib\Jeeves\tools\Jeeves.exe uninstall

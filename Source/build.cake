@@ -4,7 +4,7 @@
 var target = Argument("target", "Default");
 BuildParameters.Configuration = Argument("configuration", "Release");
 
-PackageParameters.ChocolateySpecs.Add("../NuSpec/Chocolatey/Jeeves.Host.nuspec");
+PackageParameters.ChocolateySpecs.Add("../NuSpec/Chocolatey/Jeeves.nuspec");
 
 PackageParameters.NuGetSpecs.Add("../NuSpec/NuGet/Jeeves.Core.nuspec");
 PackageParameters.NuGetPushSource = "https://www.nuget.org/api/v2/package";

@@ -4,7 +4,7 @@ using System.Threading;
 using Jeeves.Core;
 using Serilog;
 
-namespace Jeeves.Host
+namespace Jeeves
 {
     internal sealed class Service : IDisposable
     {

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Jeeves.Host
+namespace Jeeves
 {
     internal static class DirectoryInfoExtensions
     {

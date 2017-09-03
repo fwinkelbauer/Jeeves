@@ -4,7 +4,7 @@ using DbUp;
 using DbUp.Engine.Output;
 using Serilog;
 
-namespace Jeeves.Host
+namespace Jeeves
 {
     internal sealed class CommandMigrate
     {

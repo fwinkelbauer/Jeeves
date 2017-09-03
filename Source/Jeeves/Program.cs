@@ -3,7 +3,7 @@ using Jeeves.Core;
 using Serilog;
 using Topshelf;
 
-namespace Jeeves.Host
+namespace Jeeves
 {
     public static class Program
     {
@@ -21,7 +21,7 @@ namespace Jeeves.Host
             }
             catch (Exception e)
             {
-                Log.Error(e, "Could not start Jeeves.Host");
+                Log.Error(e, "Could not start Jeeves");
                 Environment.Exit(-1);
             }
             finally
@@ -62,7 +62,7 @@ namespace Jeeves.Host
                     });
 
                     hc.SetDescription("A simple REST service which provides configuration data for applications");
-                    hc.SetServiceName("Jeeves.Host");
+                    hc.SetServiceName("Jeeves");
                 });
             }
         }

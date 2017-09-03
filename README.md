@@ -1,6 +1,6 @@
 # Jeeves
 
-Jeeves is a standalone web services which provides a REST API used to read/write application configuration data from your own custom data store.
+Jeeves is a standalone web services which provides a REST API used to read/write application configuration data.
 
 ## Usage
 
@@ -37,7 +37,7 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_json?apikey=s
 ## Projects
 
 - **Jeeves.Core:** The core project to create a REST API for any data store
-- **Jeeves.Host:** A work in progress example implementation of **Jeeves.Core** using SQLite
+- **Jeeves:** A work in progress example implementation of **Jeeves.Core** using SQLite
 
 ## How To Use Jeeves.Core
 

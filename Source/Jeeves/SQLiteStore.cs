@@ -3,7 +3,7 @@ using System.IO;
 using Dapper;
 using Jeeves.Core;
 
-namespace Jeeves.Host
+namespace Jeeves
 {
     internal class SQLiteStore : IDataStore
     {

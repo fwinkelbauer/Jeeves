@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>jeeves.host</id>
-    <title>Jeeves.Host</title>
+    <id>jeeves</id>
+    <title>Jeeves</title>
     <version>0.1.0</version>
     <authors>fwinkelbauer</authors>
     <owners>fwinkelbauer</owners>
@@ -12,12 +12,12 @@
     <licenseUrl>https://github.com/fwinkelbauer/Jeeves/blob/master/LICENSE.txt</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>A standalone configuration store web service</summary>
-    <description>Jeeves.Host is a self contained web service which serves a configuration store through a REST API.</description>
+    <description>Jeeves is a self contained web service which serves a configuration store through a REST API.</description>
     <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
     <tags>Configuration Service</tags>
   </metadata>
   <files>
-    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Host\**\*" target="tools" />
+    <file src=".\..\..\BuildArtifacts\Output\Jeeves\**\*" target="tools" />
     <file src=".\..\..\LICENSE.txt" target="tools" />
     <file src=".\chocolateyInstall.ps1" target="tools" />
     <file src=".\chocolateyUninstall.ps1" target="tools" />
