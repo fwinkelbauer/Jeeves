@@ -1,7 +1,5 @@
 ﻿using System;
-using System.IO;
 using Jeeves.Core;
-using Jeeves.Host.Properties;
 using Serilog;
 using Topshelf;
 
@@ -14,51 +12,59 @@ namespace Jeeves.Host
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.Seq(Settings.Default.SeqUrl)
+                .WriteTo.RollingFile(@"C:\ProgramData\Jeeves\Logs\{Date}.txt", retainedFileCountLimit: 7)
                 .CreateLogger();
 
-            var database = new FileInfo(Settings.Default.Database);
-
-            if (!database.Directory.Exists)
+            try
             {
-                database.Directory.Create();
+                Start(args);
             }
+            catch (Exception e)
+            {
+                Log.Error(e, "Could not start Jeeves.Host");
+                Environment.Exit(-1);
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+        }
 
-            var url = Settings.Default.BaseUrl;
-            var settings = new JeevesSettings(Settings.Default.UseHttps, Settings.Default.UseAuthentication);
-            var sqlScriptsFolder = Settings.Default.SqlScriptsFolder;
+        private static void Start(string[] args)
+        {
+            var settings = AppSettings.Load();
+            var database = settings.Database;
+            database.Directory.EnsureExists();
+
+            var sqlScriptsFolder = settings.SqlScriptsDirectory;
 
             if (args != null && args.Length == 1 && args[0].Equals("migrate"))
             {
-                try
-                {
-                    new CommandMigrate().MigrateDatabase(database, sqlScriptsFolder);
-                    return;
-                }
-                catch (Exception)
-                {
-                    Environment.Exit(1);
-                }
+                new CommandMigrate().MigrateDatabase(database, sqlScriptsFolder);
             }
-
-            HostFactory.Run(hc =>
+            else
             {
-                hc.Service<Service>(sc =>
+                HostFactory.Run(hc =>
                 {
-                    sc.ConstructUsing(() => new Service(database, url, settings, sqlScriptsFolder));
-                    sc.WhenStarted(s => s.Start());
-                    sc.WhenStopped(s =>
+                    hc.Service<Service>(sc =>
                     {
-                        s.Stop();
-                        s.Dispose();
+                        sc.ConstructUsing(() => new Service(
+                            database,
+                            settings.BaseUrl,
+                            new JeevesSettings(settings.UseHttps, settings.UseAuthentication),
+                            sqlScriptsFolder));
+                        sc.WhenStarted(s => s.Start());
+                        sc.WhenStopped(s =>
+                        {
+                            s.Stop();
+                            s.Dispose();
+                        });
                     });
+
+                    hc.SetDescription("A simple REST service which provides configuration data for applications");
+                    hc.SetServiceName("Jeeves.Host");
                 });
-
-                hc.SetDescription("A simple REST service which provides configuration data");
-                hc.SetServiceName("Jeeves.Host");
-            });
-
-            Log.CloseAndFlush();
+            }
         }
     }
 }

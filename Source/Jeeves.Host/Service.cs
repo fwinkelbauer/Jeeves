@@ -17,10 +17,10 @@ namespace Jeeves.Host
         private readonly JeevesHost _host;
         private readonly string _sqlScriptsFolder;
 
-        public Service(FileInfo database, string url, JeevesSettings settings, string sqlScriptsFolder)
+        public Service(FileInfo database, Uri url, JeevesSettings settings, string sqlScriptsFolder)
         {
             _database = database;
-            _baseUrl = new Uri(url);
+            _baseUrl = url;
             _host = new JeevesHost(_baseUrl, settings, new SQLiteStore(database), new JeevesLog());
             _sqlScriptsFolder = sqlScriptsFolder;
         }
