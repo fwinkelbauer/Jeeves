@@ -4,8 +4,8 @@ namespace Jeeves.Core
 {
     public interface IJeevesLog
     {
-        void DebugFormat(string format, params object[] values);
+        void Debug(string messageTemplate, params object[] values);
 
-        void ErrorFormat(Exception ex, string format, params object[] values);
+        void Error(Exception ex, string messageTemplate, params object[] values);
     }
 }

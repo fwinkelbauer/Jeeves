@@ -27,7 +27,7 @@ namespace Jeeves.Core
 
             pipelines.ThrowIfNull(nameof(pipelines)).OnError += (ctx, ex) =>
             {
-                _log.ErrorFormat(ex, "An error occured while processing a request");
+                _log.Error(ex, "An error occured while processing a request");
                 return null;
             };
         }

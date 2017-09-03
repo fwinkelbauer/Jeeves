@@ -58,14 +58,14 @@ namespace Jeeves.Host
         {
             private readonly ILogger _log = Log.ForContext("SourceContext", "Jeeves.Core");
 
-            public void DebugFormat(string format, params object[] values)
+            public void Debug(string messageTemplate, params object[] values)
             {
-                _log.Debug(format, values);
+                _log.Debug(messageTemplate, values);
             }
 
-            public void ErrorFormat(Exception ex, string format, params object[] values)
+            public void Error(Exception ex, string messageTemplate, params object[] values)
             {
-                _log.Error(ex, format, values);
+                _log.Error(ex, messageTemplate, values);
             }
         }
     }

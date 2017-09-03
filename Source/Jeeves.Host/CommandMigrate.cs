@@ -45,20 +45,20 @@ namespace Jeeves.Host
         {
             private readonly ILogger _log = Log.ForContext("SourceContext", "DbUp");
 
-            public void WriteError(string format, params object[] args)
+            public void WriteError(string messageTemplate, params object[] args)
             {
-                _log.Error(format, args);
+                _log.Error(messageTemplate, args);
             }
 
-            public void WriteInformation(string format, params object[] args)
+            public void WriteInformation(string messageTemplate, params object[] args)
             {
                 // I am using a lower log level by choice
-                _log.Debug(format, args);
+                _log.Debug(messageTemplate, args);
             }
 
-            public void WriteWarning(string format, params object[] args)
+            public void WriteWarning(string messageTemplate, params object[] args)
             {
-                _log.Warning(format, args);
+                _log.Warning(messageTemplate, args);
             }
         }
     }

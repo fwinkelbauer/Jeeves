@@ -42,7 +42,7 @@ namespace Jeeves.Core
             {
                 if (!ctx.Request.Query.apikey.HasValue)
                 {
-                    _log.DebugFormat("Authentication failed: no API key provided");
+                    _log.Debug("Authentication failed: no API key provided");
                     return null;
                 }
 
@@ -54,17 +54,17 @@ namespace Jeeves.Core
                 }
                 catch (Exception e)
                 {
-                    _log.ErrorFormat(e, "Authentication failed");
+                    _log.Error(e, "Authentication failed");
                     throw;
                 }
 
                 if (user == null)
                 {
-                    _log.DebugFormat("Authentication failed: user not found (null)");
+                    _log.Debug("Authentication failed: user not found (null)");
                     return null;
                 }
 
-                _log.DebugFormat("Authenticated user: {user}", user.UserName);
+                _log.Debug("Authenticated user: {user}", user.UserName);
                 return user.ToUserIdentity();
             });
 
@@ -92,18 +92,18 @@ namespace Jeeves.Core
 
                     if (string.IsNullOrEmpty(value))
                     {
-                        _log.DebugFormat("No data found for request /get/{user}/{application}/{key}", user, application, key);
+                        _log.Debug("No data found for request /get/{user}/{application}/{key}", user, application, key);
 
                         return HttpStatusCode.NoContent;
                     }
 
-                    _log.DebugFormat("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
+                    _log.Debug("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
 
                     return (Response)value;
                 }
                 catch (Exception e)
                 {
-                    _log.ErrorFormat(e, "Error while processing request /get/{user}/{application}/{key}", user, application, key);
+                    _log.Error(e, "Error while processing request /get/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.NoContent;
                 }
@@ -124,7 +124,7 @@ namespace Jeeves.Core
 
                 if (string.IsNullOrEmpty(request.Value))
                 {
-                    _log.DebugFormat("No value provided for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Debug("No value provided for request /post/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.BadRequest;
                 }
@@ -133,13 +133,13 @@ namespace Jeeves.Core
                 {
                     _store.PutValue(user, application, key, request.Value);
 
-                    _log.DebugFormat("Stored value for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Debug("Stored value for request /post/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.OK;
                 }
                 catch (Exception e)
                 {
-                    _log.ErrorFormat(e, "Error while processing request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Error(e, "Error while processing request /post/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.BadRequest;
                 }

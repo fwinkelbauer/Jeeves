@@ -8,6 +8,11 @@ namespace Jeeves.Core
         private readonly JeevesBootstrapper _bootstrapper;
         private readonly NancyHost _host;
 
+        public JeevesHost(Uri baseUrl, JeevesSettings settings, IDataStore store)
+            : this(baseUrl, settings, store, new NullLog())
+        {
+        }
+
         public JeevesHost(Uri baseUrl, JeevesSettings settings, IDataStore store, IJeevesLog log)
         {
             var config = new HostConfiguration()
@@ -38,6 +43,19 @@ namespace Jeeves.Core
         public void Stop()
         {
             _host.Stop();
+        }
+
+        private class NullLog : IJeevesLog
+        {
+            public void Debug(string messageTemplate, params object[] values)
+            {
+                // do nothing
+            }
+
+            public void Error(Exception ex, string messageTemplate, params object[] values)
+            {
+                // do nothing
+            }
         }
     }
 }
