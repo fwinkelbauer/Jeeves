@@ -1,65 +1,45 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using Newtonsoft.Json;
 
 namespace Jeeves
 {
     internal class AppSettings
     {
-        private AppSettings()
+        [JsonConstructor]
+        private AppSettings(string baseUrl, bool useHttps, bool useAuthentication, string database, string sqlScriptsDirectory)
         {
+            BaseUrl = baseUrl;
+            UseHttps = useHttps;
+            UseAuthentication = useAuthentication;
+            Database = database;
+            SqlScriptsDirectory = sqlScriptsDirectory;
         }
 
-        public Uri BaseUrl { get; private set; }
+        public string BaseUrl { get; }
 
-        public bool UseHttps { get; private set; }
+        public bool UseHttps { get; }
 
-        public bool UseAuthentication { get; private set; }
+        public bool UseAuthentication { get; }
 
-        public FileInfo Database { get; private set; }
+        public string Database { get; }
 
-        public string SqlScriptsDirectory { get; private set; }
+        public string SqlScriptsDirectory { get; }
 
-        public static AppSettings Load()
+        public static void CreateDefault(string path)
         {
-            var settings = new AppSettings()
-            {
-                BaseUrl = new Uri(TryGetString("JEEVES_BASE_URL", "http://localhost:9042/jeeves/")),
-                UseHttps = TryGetBool("JEEVES_USE_HTTPS", false),
-                UseAuthentication = TryGetBool("JEEVES_USE_AUTHENTICATION", true),
-                Database = new FileInfo(TryGetString("JEEVES_DATABASE", @"C:\ProgramData\Jeeves\Jeeves.sqlite")),
-                SqlScriptsDirectory = TryGetString("JEEVES_SQL_SCRIPTS_DIRECTORY", @"C:\ProgramData\Jeeves\Scripts")
-            };
+            var settings = new AppSettings(
+                    "http://localhost:9042/jeeves/",
+                    false,
+                    true,
+                    @"C:\ProgramData\Jeeves\Jeeves.sqlite",
+                    @"C:\ProgramData\Jeeves\Scripts");
 
-            return settings;
+            File.WriteAllText(path, JsonConvert.SerializeObject(settings));
         }
 
-        private static bool TryGetBool(string variable, bool alternative)
+        public static AppSettings Load(string path)
         {
-            return TryGetValue(variable, alternative, Convert.ToBoolean);
-        }
-
-        private static string TryGetString(string variable, string alternative)
-        {
-            return TryGetValue(variable, alternative, v => v);
-        }
-
-        private static T TryGetValue<T>(string variable, T alternative, Func<string, T> converter)
-        {
-            var value = Environment.GetEnvironmentVariable(variable);
-
-            if (value == null)
-            {
-                return alternative;
-            }
-
-            try
-            {
-                return converter(value);
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException($"Could not parse value '{value}' to type {typeof(T)}");
-            }
+            return JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(path));
         }
     }
 }

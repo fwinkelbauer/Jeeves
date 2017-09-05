@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Jeeves.Core;
 using Serilog;
 using Topshelf;
@@ -7,12 +8,15 @@ namespace Jeeves
 {
     public static class Program
     {
+        private const string SettingsPath = @"C:\ProgramData\Jeeves\settings.json";
+        private const string LogFile = @"C:\ProgramData\Jeeves\Logs\{Date}.txt";
+
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.RollingFile(@"C:\ProgramData\Jeeves\Logs\{Date}.txt", retainedFileCountLimit: 7)
+                .WriteTo.RollingFile(LogFile, retainedFileCountLimit: 7)
                 .CreateLogger();
 
             try
@@ -32,8 +36,8 @@ namespace Jeeves
 
         private static void Start(string[] args)
         {
-            var settings = AppSettings.Load();
-            var database = settings.Database;
+            var settings = LoadSettings();
+            var database = new FileInfo(settings.Database);
             database.Directory.EnsureExists();
 
             var sqlScriptsFolder = settings.SqlScriptsDirectory;
@@ -50,7 +54,7 @@ namespace Jeeves
                     {
                         sc.ConstructUsing(() => new Service(
                             database,
-                            settings.BaseUrl,
+                            new Uri(settings.BaseUrl),
                             new JeevesSettings(settings.UseHttps, settings.UseAuthentication),
                             sqlScriptsFolder));
                         sc.WhenStarted(s => s.Start());
@@ -65,6 +69,16 @@ namespace Jeeves
                     hc.SetServiceName("Jeeves");
                 });
             }
+        }
+
+        private static AppSettings LoadSettings()
+        {
+            if (!File.Exists(SettingsPath))
+            {
+                AppSettings.CreateDefault(SettingsPath);
+            }
+
+            return AppSettings.Load(SettingsPath);
         }
     }
 }
