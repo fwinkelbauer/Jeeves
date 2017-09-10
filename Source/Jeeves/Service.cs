@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using Jeeves.Core;
 using Serilog;
@@ -12,12 +11,12 @@ namespace Jeeves
 
         private readonly ILogger _log = Log.ForContext<Service>();
 
-        private readonly FileInfo _database;
+        private readonly string _database;
         private readonly Uri _baseUrl;
         private readonly JeevesHost _host;
         private readonly string _sqlScriptsFolder;
 
-        public Service(FileInfo database, Uri url, JeevesSettings settings, string sqlScriptsFolder)
+        public Service(string database, Uri url, JeevesSettings settings, string sqlScriptsFolder)
         {
             _database = database;
             _baseUrl = url;
@@ -37,7 +36,7 @@ namespace Jeeves
                 lock (Lock)
                 {
                     _log.Information("Starting Jeeves");
-                    new CommandMigrate().MigrateDatabase(_database, _sqlScriptsFolder);
+                    DbUpMigration.Migrate(_database, _sqlScriptsFolder);
                     _log.Information("Starting web service on {url}", _baseUrl);
                     _host.Start();
                 }

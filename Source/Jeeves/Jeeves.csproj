@@ -43,6 +43,9 @@
     <Reference Include="DbUp.SQLite, Version=3.3.5.0, Culture=neutral, PublicKeyToken=4b419c53bdfd4cbf, processorArchitecture=MSIL">
       <HintPath>..\packages\dbup-sqlite.3.3.5\lib\net40\DbUp.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="EntryPoint, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntryPoint.1.2.2\lib\net45\EntryPoint.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -75,12 +78,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
-    <Compile Include="CommandMigrate.cs" />
-    <Compile Include="DirectoryInfoExtensions.cs" />
+    <Compile Include="CliCommands.cs" />
+    <Compile Include="DbUpMigration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="SQLiteStore.cs" />
+    <Compile Include="Topshelf.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

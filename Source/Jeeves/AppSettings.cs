@@ -5,8 +5,10 @@ namespace Jeeves
 {
     internal class AppSettings
     {
+        private const string SettingsPath = @"C:\ProgramData\Jeeves\settings.json";
+
         [JsonConstructor]
-        private AppSettings(string baseUrl, bool useHttps, bool useAuthentication, string database, string sqlScriptsDirectory)
+        public AppSettings(string baseUrl, bool useHttps, bool useAuthentication, string database, string sqlScriptsDirectory)
         {
             BaseUrl = baseUrl;
             UseHttps = useHttps;
@@ -25,21 +27,29 @@ namespace Jeeves
 
         public string SqlScriptsDirectory { get; }
 
-        public static void CreateDefault(string path)
+        public static void WriteDefault()
         {
-            var settings = new AppSettings(
-                    "http://localhost:9042/jeeves/",
-                    false,
-                    true,
-                    @"C:\ProgramData\Jeeves\Jeeves.sqlite",
-                    @"C:\ProgramData\Jeeves\Scripts");
-
-            File.WriteAllText(path, JsonConvert.SerializeObject(settings));
+            Write(new AppSettings(
+                "http://localhost:9042/jeeves/",
+                false,
+                true,
+                @"C:\ProgramData\Jeeves\Jeeves.sqlite",
+                @"C:\ProgramData\Jeeves\Scripts"));
         }
 
-        public static AppSettings Load(string path)
+        public static void Write(AppSettings settings)
         {
-            return JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(path));
+            File.WriteAllText(SettingsPath, JsonConvert.SerializeObject(settings));
+        }
+
+        public static AppSettings Load()
+        {
+            if (!File.Exists(SettingsPath))
+            {
+                WriteDefault();
+            }
+
+            return JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(SettingsPath));
         }
     }
 }

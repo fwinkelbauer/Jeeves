@@ -1,5 +1,4 @@
 ﻿using System.Data.SQLite;
-using System.IO;
 using Dapper;
 using Jeeves.Core;
 
@@ -31,7 +30,7 @@ WHERE Apikey = @Apikey;";
 
         private readonly string _connectionString;
 
-        public SQLiteStore(FileInfo database)
+        public SQLiteStore(string database)
         {
             _connectionString = $"Data Source = {database}";
         }

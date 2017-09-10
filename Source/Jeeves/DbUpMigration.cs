@@ -6,13 +6,20 @@ using Serilog;
 
 namespace Jeeves
 {
-    internal sealed class CommandMigrate
+    internal class DbUpMigration
     {
-        private readonly ILogger _log = Log.ForContext<CommandMigrate>();
+        private static readonly ILogger _log = Log.ForContext<DbUpMigration>();
 
-        public void MigrateDatabase(FileInfo database, string sqlScriptsFolder)
+        public static void Migrate(string database, string sqlScriptsFolder)
         {
             _log.Debug("Preparing database {database}", database);
+
+            var file = new FileInfo(database);
+
+            if (!file.Directory.Exists)
+            {
+                file.Directory.Create();
+            }
 
             var connectionString = $"Data Source = {database}";
 
