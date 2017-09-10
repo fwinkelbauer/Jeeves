@@ -4,7 +4,8 @@ CREATE TABLE Configuration
   UserName      TEXT        COLLATE NOCASE NOT NULL,
   Application   TEXT        COLLATE NOCASE NOT NULL,
   Key           TEXT        COLLATE NOCASE NOT NULL,
-  Value         TEXT        NOT NULL
+  Value         TEXT        NOT NULL,
+  Created       DATE        NOT NULL
 );
 
 CREATE TABLE User

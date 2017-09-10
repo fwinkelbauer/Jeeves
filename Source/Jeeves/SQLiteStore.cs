@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using System;
+using System.Data.SQLite;
 using Dapper;
 using Jeeves.Core;
 
@@ -18,8 +19,8 @@ ORDER BY UserName DESC, ID DESC
 LIMIT 1;";
 
         private const string InsertConfigurationQuery = @"
-INSERT INTO Configuration (UserName, Application, Key, Value)
-VALUES (@User, @App, @Key, @Value);";
+INSERT INTO Configuration (UserName, Application, Key, Value, Date)
+VALUES (@User, @App, @Key, @Value, @Date);";
 
         private const string SelectUserQuery = @"
 SELECT UserName, Application, CanWrite
@@ -51,7 +52,7 @@ WHERE Apikey = @Apikey;";
             {
                 connection.Open();
 
-                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value });
+                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value, Created = DateTime.Now });
             }
         }
 
