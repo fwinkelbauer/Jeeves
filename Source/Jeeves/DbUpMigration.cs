@@ -12,7 +12,7 @@ namespace Jeeves
 
         public static void Migrate(string database, string sqlScriptsFolder)
         {
-            _log.Debug("Preparing database {database}", database);
+            _log.Information("Preparing database {database}", database);
 
             var file = new FileInfo(database);
 
@@ -39,7 +39,7 @@ namespace Jeeves
 
             if (result.Successful)
             {
-                _log.Debug("Finished migration!");
+                _log.Information("Finished migration!");
             }
             else
             {
@@ -59,8 +59,7 @@ namespace Jeeves
 
             public void WriteInformation(string messageTemplate, params object[] args)
             {
-                // I am using a lower log level by choice
-                _log.Debug(messageTemplate, args);
+                _log.Information(messageTemplate, args);
             }
 
             public void WriteWarning(string messageTemplate, params object[] args)

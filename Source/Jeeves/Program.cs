@@ -1,11 +1,13 @@
 ﻿using System;
-using EntryPoint;
 using Serilog;
 
 namespace Jeeves
 {
     public static class Program
     {
+        private const string SettingsPath = @"C:\ProgramData\Jeeves\settings.json";
+        private const string Database = @"C:\ProgramData\Jeeves\Jeeves.sqlite";
+        private const string SqlScritpsDirectory = @"C:\ProgramData\Jeeves\Scripts";
         private const string LogFile = @"C:\ProgramData\Jeeves\Logs\{Date}.txt";
 
         public static void Main(string[] args)
@@ -18,14 +20,21 @@ namespace Jeeves
 
             try
             {
-                var settings = AppSettings.Load();
-                var commands = new CliCommands(settings);
+                var settings = JeevesSettingsLoader.Load(SettingsPath);
 
-                Cli.Execute(commands, args);
+                if (args.Length == 1 && args[0].Equals("migrate"))
+                {
+                    DbUpMigration.Migrate(Database, SqlScritpsDirectory);
+                }
+                else
+                {
+                    Topshelf.Start(Database, SqlScritpsDirectory, settings);
+                }
             }
             catch (Exception e)
             {
                 Log.Error(e, "Could not start Jeeves");
+                Log.CloseAndFlush();
                 Environment.Exit(-1);
             }
             finally

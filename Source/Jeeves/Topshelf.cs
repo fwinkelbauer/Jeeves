@@ -5,19 +5,19 @@ namespace Jeeves
 {
     internal class Topshelf
     {
-        public static void Start(AppSettings settings)
+        public static void Start(string database, string sqlScriptsDirectory, JeevesSettings settings)
         {
             HostFactory.Run(hc =>
             {
                 hc.Service<Service>(sc =>
                 {
                     sc.ConstructUsing(() => new Service(
-                        settings.Database,
+                        database,
                         new JeevesSettings(
                             settings.BaseUrl,
                             settings.UseHttps,
                             settings.UseAuthentication),
-                        settings.SqlScriptsDirectory));
+                        sqlScriptsDirectory));
                     sc.WhenStarted(s => s.Start());
                     sc.WhenStopped(s =>
                     {
