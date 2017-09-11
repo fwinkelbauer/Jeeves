@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Jeeves.Core;
+﻿using Jeeves.Core;
 using Topshelf;
 
 namespace Jeeves
@@ -15,8 +13,10 @@ namespace Jeeves
                 {
                     sc.ConstructUsing(() => new Service(
                         settings.Database,
-                        new Uri(settings.BaseUrl),
-                        new JeevesSettings(settings.UseHttps, settings.UseAuthentication),
+                        new JeevesSettings(
+                            settings.BaseUrl,
+                            settings.UseHttps,
+                            settings.UseAuthentication),
                         settings.SqlScriptsDirectory));
                     sc.WhenStarted(s => s.Start());
                     sc.WhenStopped(s =>

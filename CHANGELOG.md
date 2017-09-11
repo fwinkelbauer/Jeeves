@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+- **Breaking Change:** `JeevesSettings` now contains the base URL as a string input. Prior to this change the base URL was a parameter of `JeevesHost`
+
 ## [0.1.0] - 2017-09-03
 
 ### Added

@@ -12,15 +12,15 @@ namespace Jeeves
         private readonly ILogger _log = Log.ForContext<Service>();
 
         private readonly string _database;
-        private readonly Uri _baseUrl;
+        private readonly JeevesSettings _settings;
         private readonly JeevesHost _host;
         private readonly string _sqlScriptsFolder;
 
-        public Service(string database, Uri url, JeevesSettings settings, string sqlScriptsFolder)
+        public Service(string database, JeevesSettings settings, string sqlScriptsFolder)
         {
             _database = database;
-            _baseUrl = url;
-            _host = new JeevesHost(_baseUrl, settings, new SQLiteStore(database), new JeevesLog());
+            _settings = settings;
+            _host = new JeevesHost(settings, new SQLiteStore(database), new JeevesLog());
             _sqlScriptsFolder = sqlScriptsFolder;
         }
 
@@ -37,7 +37,7 @@ namespace Jeeves
                 {
                     _log.Information("Starting Jeeves");
                     DbUpMigration.Migrate(_database, _sqlScriptsFolder);
-                    _log.Information("Starting web service on {url}", _baseUrl);
+                    _log.Information("Starting web service on {url}", _settings.BaseUrl);
                     _host.Start();
                 }
             }).Start();
@@ -47,7 +47,7 @@ namespace Jeeves
         {
             lock (Lock)
             {
-                _log.Information("Stopping web service on {url}", _baseUrl);
+                _log.Information("Stopping web service on {url}", _settings.BaseUrl);
                 _host.Stop();
                 _log.Information("Goodbye");
             }

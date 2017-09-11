@@ -8,12 +8,12 @@ namespace Jeeves.Core
         private readonly JeevesBootstrapper _bootstrapper;
         private readonly NancyHost _host;
 
-        public JeevesHost(Uri baseUrl, JeevesSettings settings, IDataStore store)
-            : this(baseUrl, settings, store, new NullLog())
+        public JeevesHost(JeevesSettings settings, IDataStore store)
+            : this(settings, store, new NullLog())
         {
         }
 
-        public JeevesHost(Uri baseUrl, JeevesSettings settings, IDataStore store, IJeevesLog log)
+        public JeevesHost(JeevesSettings settings, IDataStore store, IJeevesLog log)
         {
             var config = new HostConfiguration()
             {
@@ -25,7 +25,7 @@ namespace Jeeves.Core
                 store.ThrowIfNull(nameof(store)),
                 log.ThrowIfNull(nameof(log)));
 
-            _host = new NancyHost(_bootstrapper, config, baseUrl.ThrowIfNull(nameof(baseUrl)));
+            _host = new NancyHost(_bootstrapper, config, new Uri(settings.BaseUrl));
         }
 
         public void Dispose()

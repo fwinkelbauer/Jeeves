@@ -1,12 +1,17 @@
-﻿namespace Jeeves.Core
+﻿using System;
+
+namespace Jeeves.Core
 {
     public class JeevesSettings
     {
-        public JeevesSettings(bool useHttps, bool useAuthentication)
+        public JeevesSettings(string baseUrl, bool useHttps, bool useAuthentication)
         {
+            BaseUrl = baseUrl.ThrowIfNull(nameof(baseUrl));
             UseHttps = useHttps;
             UseAuthentication = useAuthentication;
         }
+
+        public string BaseUrl { get; }
 
         public bool UseHttps { get; }
 
