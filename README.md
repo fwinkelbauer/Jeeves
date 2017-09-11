@@ -42,18 +42,40 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_json?apikey=s
 ## How To Use Jeeves.Core
 
 - Add the NuGet package `Jeeves.Core` to your project
-- Create an implementation of `Jeeves.Core.IDataStore`. This interface is used to authenticate an user (if you activate authentication via `JeevesSettings`, see below), as well as to retrieve configuration data for an application
-- **Optional:** Create an implementation of `Jeeves.Core.IJeevesLog` to receive internal logging information
+- Create an implementation of `Jeeves.Core.IDataStore`. This interface is used to authenticate an user, as well as to store/retrieve configuration data for an application
+- **Optional:** Create an implementation of `Jeeves.Core.IJeevesLog` to receive internal logging information. This object can be passed into `JeevesHost`
 - Jeeves.Core is a self hosted [NancyFX](http://nancyfx.org/) application. To enable SSL follow [this guide](https://coderead.wordpress.com/2014/08/07/enabling-ssl-for-self-hosted-nancy/)
 - Instantiate and start your own host like this:
+
+```csharp
+public class MyDataStore : IDataStore
+{
+    public JeevesUser RetrieveUser(string apikey)
+    {
+        // This method is only used if authentication
+        // is enabled via the JeevesSettings class
+
+        // return JeevesUser/null or throw Exception
+    }
+
+    public void PutValue(string userName, string application, string key, string value)
+    {
+        // (userName, application, key) -> store value or throw Exception
+    }
+
+    public string RetrieveValue(string userName, string application, string key)
+    {
+        // (userName, application, key) -> return value/null or throw Exception
+    }
+}
+```
 
 ```csharp
 var settings = new JeevesSettings(false, false); // Configure https and authentication details
 var baseUrl = "http://localhost:9042/jeeves/"; // Define the base URL
 IDataStore store = new MyDataStore(); // Provide your implementation here
-IJeevesLog log = new MyLog(); // Provde your log implementation here
 
-using (var host = new JeevesHost(new Uri(baseUrl), settings, store, log))
+using (var host = new JeevesHost(new Uri(baseUrl), settings, store))
 {
     host.Start();
     Console.WriteLine("Press ENTER to exit");
