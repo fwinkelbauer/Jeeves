@@ -107,7 +107,7 @@ namespace Jeeves.Core.UnitTests
                 with.HttpsRequest();
             });
 
-            store.Received().PutValue("admin", "my_app", "my_key", "barbarbar");
+            store.Received().StoreValue("admin", "my_app", "my_key", "barbarbar");
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 
@@ -123,7 +123,7 @@ namespace Jeeves.Core.UnitTests
                 with.HttpRequest();
             });
 
-            store.Received().PutValue("admin", "my_app", "my_key", "barbarbar");
+            store.Received().StoreValue("admin", "my_app", "my_key", "barbarbar");
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         }
 

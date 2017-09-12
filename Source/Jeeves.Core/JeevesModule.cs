@@ -132,7 +132,7 @@ namespace Jeeves.Core
 
                 try
                 {
-                    _store.PutValue(user, application, key, request.Value);
+                    _store.StoreValue(user, application, key, request.Value);
 
                     _log.Debug("Stored value for request /post/{user}/{application}/{key}", user, application, key);
 

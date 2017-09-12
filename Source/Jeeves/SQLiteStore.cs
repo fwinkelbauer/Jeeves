@@ -46,7 +46,7 @@ WHERE Apikey = @Apikey;";
             }
         }
 
-        public void PutValue(string userName, string application, string key, string value)
+        public void StoreValue(string userName, string application, string key, string value)
         {
             using (var connection = new SQLiteConnection(_connectionString))
             {
