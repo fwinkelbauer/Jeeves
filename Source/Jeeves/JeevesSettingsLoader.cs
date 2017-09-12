@@ -20,8 +20,7 @@ namespace Jeeves
         {
             var settings = new JeevesSettings(
                 "http://localhost:9042/jeeves/",
-                false,
-                true);
+                SecurityOption.Http);
 
             File.WriteAllText(settingsPath, JsonConvert.SerializeObject(settings, Formatting.Indented));
         }

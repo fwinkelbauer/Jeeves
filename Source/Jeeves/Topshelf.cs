@@ -13,10 +13,7 @@ namespace Jeeves
                 {
                     sc.ConstructUsing(() => new Service(
                         database,
-                        new JeevesSettings(
-                            settings.BaseUrl,
-                            settings.UseHttps,
-                            settings.UseAuthentication),
+                        settings,
                         sqlScriptsDirectory));
                     sc.WhenStarted(s => s.Start());
                     sc.WhenStopped(s =>

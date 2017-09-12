@@ -25,7 +25,8 @@ namespace Jeeves.Core
 
         private void ConfigureSecurity()
         {
-            if (_settings.UseHttps)
+            if (_settings.Security == SecurityOption.Https
+                || _settings.Security == SecurityOption.HttpsAndAuthentication)
             {
                 this.RequiresHttps();
             }
@@ -33,7 +34,7 @@ namespace Jeeves.Core
 
         private void ConfigureAuthentication()
         {
-            if (!_settings.UseAuthentication)
+            if (_settings.Security != SecurityOption.HttpsAndAuthentication)
             {
                 return;
             }
@@ -80,7 +81,7 @@ namespace Jeeves.Core
                 string application = parameters.application;
                 string key = parameters.key;
 
-                if (_settings.UseAuthentication)
+                if (_settings.Security == SecurityOption.HttpsAndAuthentication)
                 {
                     this.RequiresClaims($"user: {user}", $"app: {application}");
                     this.RequiresAnyClaim("access: read", "access: read/write");
@@ -115,7 +116,7 @@ namespace Jeeves.Core
                 string application = parameters.application;
                 string key = parameters.key;
 
-                if (_settings.UseAuthentication)
+                if (_settings.Security == SecurityOption.HttpsAndAuthentication)
                 {
                     this.RequiresClaims($"user: {user}", $"app: {application}", "access: read/write");
                 }

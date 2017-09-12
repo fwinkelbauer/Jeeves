@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
-- **Breaking Change:** `JeevesSettings` now contains the base URL as a string input. Prior to this change the base URL was a parameter of `JeevesHost`
+- **Breaking Change:** To instantiate an object of `JeevesSettings` a base URL as well as a security option (HTTP - meaning no security, HTTPS, HTTPS with user authentication) is needed. Prior to this change `Jeeves.Core` could be configured to use user authentication without HTTP which would create a false sense of security
 
 ## [0.1.0] - 2017-09-03
 
