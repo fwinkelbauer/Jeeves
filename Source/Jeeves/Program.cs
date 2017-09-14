@@ -22,14 +22,7 @@ namespace Jeeves
             {
                 var settings = JeevesSettingsLoader.Load(SettingsPath);
 
-                if (args.Length == 1 && args[0].Equals("migrate"))
-                {
-                    DbUpMigration.Migrate(Database, SqlScritpsDirectory);
-                }
-                else
-                {
-                    Topshelf.Start(Database, SqlScritpsDirectory, settings);
-                }
+                Topshelf.Start(Database, SqlScritpsDirectory, settings);
             }
             catch (Exception e)
             {
