@@ -43,7 +43,7 @@ namespace Jeeves.Core
             {
                 if (!ctx.Request.Query.apikey.HasValue)
                 {
-                    _log.Debug("Authentication failed: no API key provided");
+                    _log.Information("Authentication failed: no API key provided");
                     return null;
                 }
 
@@ -61,11 +61,11 @@ namespace Jeeves.Core
 
                 if (user == null)
                 {
-                    _log.Debug("Authentication failed: user not found (null)");
+                    _log.Information("Authentication failed: user not found (null)");
                     return null;
                 }
 
-                _log.Debug("Authenticated user: {user}", user.UserName);
+                _log.Information("Authenticated user: {user}", user.UserName);
                 return user.ToUserIdentity();
             });
 
@@ -93,12 +93,12 @@ namespace Jeeves.Core
 
                     if (string.IsNullOrEmpty(value))
                     {
-                        _log.Debug("No data found for request /get/{user}/{application}/{key}", user, application, key);
+                        _log.Information("No data found for request /get/{user}/{application}/{key}", user, application, key);
 
                         return HttpStatusCode.NoContent;
                     }
 
-                    _log.Debug("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
+                    _log.Information("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
 
                     return (Response)value;
                 }
@@ -125,7 +125,7 @@ namespace Jeeves.Core
 
                 if (string.IsNullOrEmpty(request.Value))
                 {
-                    _log.Debug("No value provided for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Information("No value provided for request /post/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.BadRequest;
                 }
@@ -134,7 +134,7 @@ namespace Jeeves.Core
                 {
                     _store.StoreValue(user, application, key, request.Value);
 
-                    _log.Debug("Stored value for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Information("Stored value for request /post/{user}/{application}/{key}", user, application, key);
 
                     return HttpStatusCode.OK;
                 }
