@@ -14,7 +14,7 @@ namespace Jeeves
         #region Queries
 
         private const string SelectConfigurationQuery = @"
-SELECT Value
+SELECT Value, Revoked
 FROM Configuration
 WHERE (UserName = @User OR UserName = '')
 AND Application = @App
@@ -23,11 +23,11 @@ ORDER BY UserName DESC, ID DESC
 LIMIT 1;";
 
         private const string InsertConfigurationQuery = @"
-INSERT INTO Configuration (UserName, Application, Key, Value, Date)
-VALUES (@User, @App, @Key, @Value, @Date);";
+INSERT INTO Configuration (UserName, Application, Key, Value, Revoked, Created)
+VALUES (@User, @App, @Key, @Value, @Revoked, @Created);";
 
         private const string SelectUserQuery = @"
-SELECT UserName, Application, CanWrite
+SELECT UserName, Application, CanWrite, Revoked
 FROM User
 WHERE Apikey = @Apikey;";
 
@@ -58,7 +58,9 @@ WHERE Apikey = @Apikey;";
             {
                 connection.Open();
 
-                return connection.QueryFirst<string>(SelectConfigurationQuery, new { User = userName, App = application, Key = key });
+                var config = connection.QueryFirst<Configuration>(SelectConfigurationQuery, new { User = userName, App = application, Key = key });
+
+                return config.Revoked ? null : config.Value;
             }
         }
 
@@ -70,7 +72,7 @@ WHERE Apikey = @Apikey;";
             {
                 connection.Open();
 
-                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value, Created = DateTime.Now });
+                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value, Revoked = false, Created = DateTime.Now });
             }
         }
 
@@ -82,7 +84,9 @@ WHERE Apikey = @Apikey;";
             {
                 connection.Open();
 
-                return connection.QueryFirst<JeevesUser>(SelectUserQuery, new { Apikey = Hasher.Hash(apikey, _salt) });
+                var user = connection.QueryFirst<User>(SelectUserQuery, new { Apikey = Hasher.Hash(apikey, _salt) });
+
+                return user.Revoked ? null : new JeevesUser(user.UserName, user.Application, user.CanWrite);
             }
         }
 
@@ -133,6 +137,40 @@ WHERE Apikey = @Apikey;";
             {
                 _dbUpLog.Warning(messageTemplate, args);
             }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+        private class Configuration
+        {
+            public Configuration(string value, bool revoked)
+            {
+                Value = value;
+                Revoked = revoked;
+            }
+
+            public string Value { get; }
+
+            public bool Revoked { get; }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+        private class User
+        {
+            public User(string userName, string application, bool canWrite, bool revoked)
+            {
+                UserName = userName;
+                Application = application;
+                CanWrite = canWrite;
+                Revoked = revoked;
+            }
+
+            public string UserName { get; }
+
+            public string Application { get; }
+
+            public bool CanWrite { get; }
+
+            public bool Revoked { get; }
         }
     }
 }
