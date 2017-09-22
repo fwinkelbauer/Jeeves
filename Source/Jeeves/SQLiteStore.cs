@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.IO;
 using System.Reflection;
 using Dapper;
 using DbUp;
@@ -16,10 +17,10 @@ namespace Jeeves
         private const string SelectConfigurationQuery = @"
 SELECT Value, Revoked
 FROM Configuration
-WHERE (UserName = @User OR UserName = '')
+WHERE UserName = @User
 AND Application = @App
 AND Key = @Key
-ORDER BY UserName DESC, ID DESC
+ORDER BY ID DESC
 LIMIT 1;";
 
         private const string InsertConfigurationQuery = @"
@@ -37,15 +38,13 @@ WHERE Apikey = @Apikey;";
 
         private readonly string _database;
         private readonly string _connectionString;
-        private readonly string _salt;
 
         private bool _migrateDone;
 
-        public SQLiteStore(string database, string salt)
+        public SQLiteStore(string database)
         {
             _database = database;
             _connectionString = $"Data Source = {database}";
-            _salt = salt;
 
             _migrateDone = false;
         }
@@ -58,9 +57,9 @@ WHERE Apikey = @Apikey;";
             {
                 connection.Open();
 
-                var config = connection.QueryFirst<Configuration>(SelectConfigurationQuery, new { User = userName, App = application, Key = key });
+                var config = connection.QueryFirstOrDefault<Configuration>(SelectConfigurationQuery, new { User = userName, App = application, Key = key });
 
-                return config.Revoked ? null : config.Value;
+                return (config == null || config.Revoked) ? null : config.Value;
             }
         }
 
@@ -83,21 +82,28 @@ WHERE Apikey = @Apikey;";
             using (var connection = new SQLiteConnection(_connectionString))
             {
                 connection.Open();
+                
+                var user = connection.QueryFirstOrDefault<User>(SelectUserQuery, new { Apikey = apikey });
 
-                var user = connection.QueryFirst<User>(SelectUserQuery, new { Apikey = Hasher.Hash(apikey, _salt) });
-
-                return user.Revoked ? null : new JeevesUser(user.UserName, user.Application, user.CanWrite);
+                return (user == null || user.Revoked) ? null : new JeevesUser(user.UserName, user.Application, user.CanWrite);
             }
         }
 
         private void Migrate()
         {
-            if (_migrateDone)
+            if (_migrateDone && File.Exists(_database))
             {
                 return;
             }
 
             _log.Information("Preparing database {database}", _database);
+
+            var parentDir = Directory.GetParent(_database);
+
+            if (!parentDir.Exists)
+            {
+                parentDir.Create();
+            }
 
             var upgrader = DeployChanges.To
                 .SQLiteDatabase(_connectionString)

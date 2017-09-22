@@ -12,7 +12,7 @@ CREATE TABLE Configuration
 CREATE TABLE User
 (
   ID            INTEGER     PRIMARY KEY,
-  Apikey        TEXT        NOT NULL,
+  Apikey        TEXT        UNIQUE,
   UserName      TEXT        COLLATE NOCASE NOT NULL,
   Application   TEXT        COLLATE NOCASE NOT NULL,
   CanWrite      BOOLEAN     NOT NULL,

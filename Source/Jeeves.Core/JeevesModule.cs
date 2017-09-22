@@ -61,7 +61,7 @@ namespace Jeeves.Core
 
                 if (user == null)
                 {
-                    _log.Information("Authentication failed: user not found (null)");
+                    _log.Information("User does not exist");
                     return null;
                 }
 
@@ -80,6 +80,7 @@ namespace Jeeves.Core
                 string user = parameters.user;
                 string application = parameters.application;
                 string key = parameters.key;
+                var route = $"/get/{user}/{application}/{key}";
 
                 if (_settings.Security == SecurityOption.HttpsAndAuthentication)
                 {
@@ -93,18 +94,18 @@ namespace Jeeves.Core
 
                     if (string.IsNullOrEmpty(value))
                     {
-                        _log.Information("No data found for request /get/{user}/{application}/{key}", user, application, key);
+                        _log.Information("No data found for request {route}", route);
 
                         return HttpStatusCode.NoContent;
                     }
 
-                    _log.Information("Retriving value for request /get/{user}/{application}/{key}", user, application, key);
+                    _log.Information("Retriving value for request {route}", route);
 
-                    return (Response)value;
+                    return value;
                 }
                 catch (Exception e)
                 {
-                    _log.Error(e, "Error while processing request /get/{user}/{application}/{key}", user, application, key);
+                    _log.Error(e, "Error while processing request route", route);
 
                     return HttpStatusCode.NoContent;
                 }
@@ -115,6 +116,7 @@ namespace Jeeves.Core
                 string user = parameters.user;
                 string application = parameters.application;
                 string key = parameters.key;
+                var route = $"/post/{user}/{application}/{key}";
 
                 if (_settings.Security == SecurityOption.HttpsAndAuthentication)
                 {
@@ -123,9 +125,9 @@ namespace Jeeves.Core
 
                 var request = this.Bind<PostKeyRequest>();
 
-                if (string.IsNullOrEmpty(request.Value))
+                if (request == null || string.IsNullOrEmpty(request.Value))
                 {
-                    _log.Information("No value provided for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Information("No value provided for request {route}", route);
 
                     return HttpStatusCode.BadRequest;
                 }
@@ -134,13 +136,13 @@ namespace Jeeves.Core
                 {
                     _store.StoreValue(user, application, key, request.Value);
 
-                    _log.Information("Stored value for request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Information("Stored value for request {route}", route);
 
                     return HttpStatusCode.OK;
                 }
                 catch (Exception e)
                 {
-                    _log.Error(e, "Error while processing request /post/{user}/{application}/{key}", user, application, key);
+                    _log.Error(e, "Error while processing request {route}", route);
 
                     return HttpStatusCode.BadRequest;
                 }
