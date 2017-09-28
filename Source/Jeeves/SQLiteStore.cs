@@ -96,8 +96,6 @@ WHERE Apikey = @Apikey;";
                 return;
             }
 
-            _log.Information("Preparing database {database}", _database);
-
             var parentDir = Directory.GetParent(_database);
 
             if (!parentDir.Exists)
@@ -108,7 +106,6 @@ WHERE Apikey = @Apikey;";
             var upgrader = DeployChanges.To
                 .SQLiteDatabase(_connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                .LogTo(new DbUpLog())
                 .Build();
 
             var result = upgrader.PerformUpgrade();
@@ -116,32 +113,11 @@ WHERE Apikey = @Apikey;";
             if (result.Successful)
             {
                 _migrateDone = true;
-                _log.Information("Finished migration!");
             }
             else
             {
                 _log.Error(result.Error, "Error while migrating database");
                 throw result.Error;
-            }
-        }
-
-        private class DbUpLog : IUpgradeLog
-        {
-            private readonly ILogger _dbUpLog = Log.ForContext("SourceContext", "DbUp");
-
-            public void WriteError(string messageTemplate, params object[] args)
-            {
-                _dbUpLog.Error(messageTemplate, args);
-            }
-
-            public void WriteInformation(string messageTemplate, params object[] args)
-            {
-                _dbUpLog.Information(messageTemplate, args);
-            }
-
-            public void WriteWarning(string messageTemplate, params object[] args)
-            {
-                _dbUpLog.Warning(messageTemplate, args);
             }
         }
 

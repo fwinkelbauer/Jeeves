@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Jeeves.Core;
 using Newtonsoft.Json;
 
@@ -13,14 +14,28 @@ namespace Jeeves
                 WriteDefault(settingsPath);
             }
 
-            return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
+            Settings settings = null;
+
+            try
+            {
+                settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Invalid configuration - '{settingsPath}'", e);
+            }
+
+            if (settings == null)
+            {
+                throw new InvalidOperationException($"Empty configuration - '{settingsPath}'");
+            }
+
+            return settings;
         }
 
         private static void WriteDefault(string settingsPath)
         {
             var settings = new Settings(
-                "Jeeves",
-                "A simple REST service which provides configuration data for applications",
                 "Jeeves.sqlite",
                 "http://localhost:9042/jeeves/",
                 SecurityOption.Http);
