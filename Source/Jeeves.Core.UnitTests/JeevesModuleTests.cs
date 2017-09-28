@@ -173,7 +173,7 @@ namespace Jeeves.Core.UnitTests
         private IDataStore CreateStoreWithUser()
         {
             var store = Substitute.For<IDataStore>();
-            store.RetrieveUser("my_api").Returns(new JeevesUser("admin", "my_app", true));
+            store.RetrieveUser("my_api").Returns(new JeevesUser("admin", "my_app"));
 
             return store;
         }

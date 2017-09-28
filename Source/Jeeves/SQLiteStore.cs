@@ -28,7 +28,7 @@ INSERT INTO Configuration (UserName, Application, Key, Value, Revoked, Created)
 VALUES (@User, @App, @Key, @Value, @Revoked, @Created);";
 
         private const string SelectUserQuery = @"
-SELECT UserName, Application, CanWrite, Revoked
+SELECT UserName, Application, Revoked
 FROM User
 WHERE Apikey = @Apikey;";
 
@@ -85,7 +85,7 @@ WHERE Apikey = @Apikey;";
                 
                 var user = connection.QueryFirstOrDefault<User>(SelectUserQuery, new { Apikey = apikey });
 
-                return (user == null || user.Revoked) ? null : new JeevesUser(user.UserName, user.Application, user.CanWrite);
+                return (user == null || user.Revoked) ? null : new JeevesUser(user.UserName, user.Application);
             }
         }
 
@@ -162,19 +162,16 @@ WHERE Apikey = @Apikey;";
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         private class User
         {
-            public User(string userName, string application, bool canWrite, bool revoked)
+            public User(string userName, string application, bool revoked)
             {
                 UserName = userName;
                 Application = application;
-                CanWrite = canWrite;
                 Revoked = revoked;
             }
 
             public string UserName { get; }
 
             public string Application { get; }
-
-            public bool CanWrite { get; }
 
             public bool Revoked { get; }
         }

@@ -85,7 +85,6 @@ namespace Jeeves.Core
                 if (_settings.Security == SecurityOption.HttpsAndAuthentication)
                 {
                     this.RequiresClaims($"user: {user}", $"app: {application}");
-                    this.RequiresAnyClaim("access: read", "access: read/write");
                 }
 
                 try
@@ -120,7 +119,7 @@ namespace Jeeves.Core
 
                 if (_settings.Security == SecurityOption.HttpsAndAuthentication)
                 {
-                    this.RequiresClaims($"user: {user}", $"app: {application}", "access: read/write");
+                    this.RequiresClaims($"user: {user}", $"app: {application}");
                 }
 
                 var request = this.Bind<PostKeyRequest>();
