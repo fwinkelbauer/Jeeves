@@ -1,4 +1,5 @@
-﻿using Jeeves.Core;
+﻿using System;
+using Jeeves.Core;
 using Serilog;
 using Topshelf;
 
@@ -10,7 +11,7 @@ namespace Jeeves
 
         public static void Main()
         {
-            HostFactory.Run(hc =>
+            var exitCode = HostFactory.Run(hc =>
             {
                 hc.Service<Service>();
 
@@ -23,6 +24,8 @@ namespace Jeeves
                 hc.SetServiceName("Jeeves");
                 hc.SetDescription("A simple REST service which provides configuration data for applications");
             });
+
+            Environment.Exit((int)exitCode);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
