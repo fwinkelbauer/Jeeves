@@ -95,6 +95,8 @@ WHERE Apikey = @Apikey;";
                 return;
             }
 
+            _migrateDone = false;
+
             var parentDir = Directory.GetParent(_database);
 
             if (!parentDir.Exists)

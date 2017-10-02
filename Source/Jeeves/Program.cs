@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Jeeves.Core;
 using Serilog;
 using Topshelf;
@@ -7,7 +8,11 @@ namespace Jeeves
 {
     public static class Program
     {
-        private const string SettingsPath = "settings.json";
+        private const string BaseUrl = "http://localhost:9042/jeeves/";
+        private const string JeevesDir = @"C:\ProgramData\Jeeves";
+
+        private static readonly string _databasePath = Path.Combine(JeevesDir, "Jeeves.sqlite");
+        private static readonly string _logPath = Path.Combine(JeevesDir, @"logs\{Date}.txt");
 
         public static void Main()
         {
@@ -39,14 +44,13 @@ namespace Jeeves
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo.Console()
-                    .WriteTo.RollingFile("logs/{Date}.txt", retainedFileCountLimit: 7)
+                    .WriteTo.RollingFile(_logPath, retainedFileCountLimit: 7)
                     .CreateLogger();
 
-                var settings = SettingsLoader.Load(SettingsPath);
-                var store = new SQLiteStore(settings.DatabasePath);
+                var store = new SQLiteStore(_databasePath);
 
                 _host = new JeevesHostBuilder(
-                    new Uri(settings.BaseUrl),
+                    new Uri(BaseUrl),
                     store)
                     .LogTo(new JeevesLog())
                     .Build();
