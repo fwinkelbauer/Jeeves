@@ -8,14 +8,16 @@ namespace Jeeves.Core
 {
     internal class JeevesModule : NancyModule
     {
-        private readonly JeevesSettings _settings;
+        private readonly ModuleSettings _settings;
         private readonly IDataStore _store;
+        private readonly IUserAuthenticator _authenticator;
         private readonly IJeevesLog _log;
 
-        public JeevesModule(JeevesSettings settings, IDataStore store, IJeevesLog log)
+        public JeevesModule(ModuleSettings settings, IDataStore store, IUserAuthenticator authenticator, IJeevesLog log)
         {
             _settings = settings;
             _store = store;
+            _authenticator = authenticator;
             _log = log;
 
             ConfigureSecurity();
@@ -25,8 +27,7 @@ namespace Jeeves.Core
 
         private void ConfigureSecurity()
         {
-            if (_settings.Security == SecurityOption.Https
-                || _settings.Security == SecurityOption.HttpsAndAuthentication)
+            if (_settings.UseHttps)
             {
                 this.RequiresHttps();
             }
@@ -34,39 +35,32 @@ namespace Jeeves.Core
 
         private void ConfigureAuthentication()
         {
-            if (_settings.Security != SecurityOption.HttpsAndAuthentication)
+            if (_authenticator == null)
             {
                 return;
             }
 
             var configuration = new StatelessAuthenticationConfiguration(ctx =>
             {
-                if (!ctx.Request.Query.apikey.HasValue)
-                {
-                    _log.Information("Authentication failed: no API key provided");
-                    return null;
-                }
-
-                JeevesUser user = null;
-
                 try
                 {
-                    user = _store.RetrieveUser(ctx.Request.Query.apikey);
+                    var apikey = ctx.Request.Query.apikey.HasValue ? ctx.Request.Query.apikey : string.Empty;
+                    var user = _authenticator.RetrieveUser(apikey);
+
+                    if (user == null)
+                    {
+                        _log.Information("User does not exist");
+                        return null;
+                    }
+
+                    _log.Information("Authenticated user: {user}", user.UserName);
+                    return user.ToUserIdentity();
                 }
                 catch (Exception e)
                 {
                     _log.Error(e, "Authentication failed");
                     throw;
                 }
-
-                if (user == null)
-                {
-                    _log.Information("User does not exist");
-                    return null;
-                }
-
-                _log.Information("Authenticated user: {user}", user.UserName);
-                return user.ToUserIdentity();
             });
 
             StatelessAuthentication.Enable(this, configuration);
@@ -82,7 +76,7 @@ namespace Jeeves.Core
                 string key = parameters.key;
                 var route = $"/get/{user}/{application}/{key}";
 
-                if (_settings.Security == SecurityOption.HttpsAndAuthentication)
+                if (_authenticator != null)
                 {
                     this.RequiresClaims($"user: {user}", $"app: {application}");
                 }
@@ -98,7 +92,7 @@ namespace Jeeves.Core
                         return HttpStatusCode.NoContent;
                     }
 
-                    _log.Information("Retriving value for request {route}", route);
+                    _log.Information("Retrieving value for request {route}", route);
 
                     return value;
                 }
@@ -117,7 +111,7 @@ namespace Jeeves.Core
                 string key = parameters.key;
                 var route = $"/post/{user}/{application}/{key}";
 
-                if (_settings.Security == SecurityOption.HttpsAndAuthentication)
+                if (_authenticator != null)
                 {
                     this.RequiresClaims($"user: {user}", $"app: {application}");
                 }

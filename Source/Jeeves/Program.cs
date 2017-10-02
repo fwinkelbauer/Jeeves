@@ -43,10 +43,13 @@ namespace Jeeves
                     .CreateLogger();
 
                 var settings = SettingsLoader.Load(SettingsPath);
-                _host = new JeevesHost(
-                    new JeevesSettings(settings.BaseUrl, settings.Security),
-                    new SQLiteStore(settings.DatabasePath),
-                    new JeevesLog());
+                var store = new SQLiteStore(settings.DatabasePath);
+
+                _host = new JeevesHostBuilder(
+                    new Uri(settings.BaseUrl),
+                    store)
+                    .LogTo(new JeevesLog())
+                    .Build();
 
                 _host.Start();
 

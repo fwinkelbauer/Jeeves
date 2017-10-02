@@ -4,13 +4,12 @@ using System.IO;
 using System.Reflection;
 using Dapper;
 using DbUp;
-using DbUp.Engine.Output;
 using Jeeves.Core;
 using Serilog;
 
 namespace Jeeves
 {
-    internal class SQLiteStore : IDataStore
+    internal class SQLiteStore : IDataStore, IUserAuthenticator
     {
         #region Queries
 

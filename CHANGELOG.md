@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
-- **Breaking Change:** To instantiate an object of `JeevesSettings` a base URL as well as a security option (HTTP - meaning no security, HTTPS, HTTPS with user authentication) is needed. Prior to this change `Jeeves.Core` could be configured to use user authentication without HTTP which would create a false sense of security
-- **Breaking Change:** Renamed the `PutValue(...)` method in `IDataStore` to `StoreValue(...)`
-- **Breaking Change:** Renamed the `Debug(...)` method in `IJeevesLog` to `Information(...)`
+- An instance of `JeevesHost` is now created using a `JeevesHostBuilder`. The builder can be used to add logging and user authentification
+- Renamed the `PutValue(...)` method in `IDataStore` to `StoreValue(...)`
+- Moved the `RetrieveUser(...)` method of `IDataStore` into `IUserAuthenticator`
+- Renamed the `Debug(...)` method in `IJeevesLog` to `Information(...)`
+- Authentication can now only be used with HTTPS
 
 ## [0.1.0] - 2017-09-03
 

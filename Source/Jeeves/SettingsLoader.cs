@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Jeeves.Core;
 using Newtonsoft.Json;
 
 namespace Jeeves
@@ -14,31 +13,28 @@ namespace Jeeves
                 WriteDefault(settingsPath);
             }
 
-            Settings settings = null;
-
             try
             {
-                settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
+                var settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(settingsPath));
+
+                if (settings == null)
+                {
+                    throw new InvalidOperationException($"Empty configuration - '{settingsPath}'");
+                }
+
+                return settings;
             }
             catch (Exception e)
             {
                 throw new InvalidOperationException($"Invalid configuration - '{settingsPath}'", e);
             }
-
-            if (settings == null)
-            {
-                throw new InvalidOperationException($"Empty configuration - '{settingsPath}'");
-            }
-
-            return settings;
         }
 
         private static void WriteDefault(string settingsPath)
         {
             var settings = new Settings(
                 "Jeeves.sqlite",
-                "http://localhost:9042/jeeves/",
-                SecurityOption.Http);
+                "http://localhost:9042/jeeves/");
 
             File.WriteAllText(settingsPath, JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
