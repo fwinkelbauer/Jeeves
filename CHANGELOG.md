@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
-- An instance of `JeevesHost` is now created using a `JeevesHostBuilder`. The builder can be used to add logging and user authentification
+- An instance of `JeevesHost` is now created using a `JeevesHostBuilder`. The builder can be used to add logging and user authentication
 - Renamed the `PutValue(...)` method in `IDataStore` to `StoreValue(...)`
 - Moved the `RetrieveUser(...)` method of `IDataStore` into `IUserAuthenticator`
 - Renamed the `Debug(...)` method in `IJeevesLog` to `Information(...)`

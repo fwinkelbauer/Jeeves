@@ -49,9 +49,8 @@ namespace Jeeves
 
                 var store = new SQLiteStore(_databasePath);
 
-                _host = new JeevesHostBuilder(
-                    new Uri(BaseUrl),
-                    store)
+                _host = new JeevesHostBuilder(new Uri(BaseUrl), store)
+                    .WithUserAuthentication(store)
                     .LogTo(new JeevesLog())
                     .Build();
 
