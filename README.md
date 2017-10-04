@@ -16,7 +16,7 @@ Jeeves offers two routes:
 curl http://localhost:9042/jeeves/get/my_user/my_application/some_key
 
 # With authentication
-curl http://localhost:9042/jeeves/get/my_user/my_application/some_key?apikey=some_apikey
+curl https://localhost:9042/jeeves/get/my_user/my_application/some_key?apikey=some_apikey
 ```
 
 ### Write Configuration Data
@@ -30,8 +30,8 @@ curl http://localhost:9042/jeeves/post/my_user/my_application/some_key --data "v
 curl http://localhost:9042/jeeves/post/my_user/my_application/some_json --data 'value={ "foo" : "bar" }'
 
 # With authentication
-curl http://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=some_apikey --data "value=42"
-curl http://localhost:9042/jeeves/post/my_user/my_application/some_json?apikey=some_apikey --data 'value={ "foo" : "bar" }'
+curl https://localhost:9042/jeeves/post/my_user/my_application/some_key?apikey=some_apikey --data "value=42"
+curl https://localhost:9042/jeeves/post/my_user/my_application/some_json?apikey=some_apikey --data 'value={ "foo" : "bar" }'
 ```
 
 ## Projects
