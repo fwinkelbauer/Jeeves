@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Jeeves.Core;
 using Serilog;
 using Topshelf;
@@ -7,48 +8,65 @@ namespace Jeeves
 {
     public static class Program
     {
-        private const string SettingsPath = "settings.json";
+        private const string BaseUrl = "http://localhost:9042/jeeves/";
+        private const string JeevesDir = @"C:\ProgramData\Jeeves";
+
+        private static readonly string _databasePath = Path.Combine(JeevesDir, "Jeeves.sqlite");
+        private static readonly string _logPath = Path.Combine(JeevesDir, @"logs\{Date}.txt");
 
         public static void Main()
         {
-            try
+            var exitCode = HostFactory.Run(hc =>
             {
-                var settings = SettingsLoader.Load(SettingsPath);
-                var store = new SQLiteStore(settings.DatabasePath);
+                hc.Service<Service>();
 
+                hc.OnException(e =>
+                {
+                    Log.Error(e, "Could not start Jeeves");
+                    Log.CloseAndFlush();
+                });
+
+                hc.SetServiceName("Jeeves");
+                hc.SetDescription("A simple REST service which provides configuration data for applications");
+            });
+
+            Environment.Exit((int)exitCode);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
+        private class Service : ServiceControl
+        {
+            private JeevesHost _host;
+
+            public bool Start(HostControl hostControl)
+            {
                 Log.Logger = new LoggerConfiguration()
                     .MinimumLevel.Debug()
                     .WriteTo.Console()
-                    .WriteTo.RollingFile(@"logs\{Date}.txt", retainedFileCountLimit: 7)
+                    .WriteTo.RollingFile(_logPath, retainedFileCountLimit: 7)
                     .CreateLogger();
 
-                HostFactory.Run(hc =>
-                {
-                    hc.Service<JeevesHost>(sc =>
-                    {
-                        sc.ConstructUsing(() => new JeevesHost(
-                            new JeevesSettings(settings.BaseUrl, settings.Security),
-                            store,
-                            new JeevesLog()));
-                        sc.WhenStarted(s => s.Start());
-                        sc.WhenStopped(s =>
-                        {
-                            s.Stop();
-                            s.Dispose();
-                        });
-                    });
+                var store = new SQLiteStore(_databasePath);
 
-                    hc.SetServiceName(settings.ServiceName);
-                    hc.SetDescription(settings.ServiceDescription);
-                });
+                _host = new JeevesHostBuilder(new Uri(BaseUrl), store)
+                    .WithUserAuthentication(store)
+                    .LogTo(new JeevesLog())
+                    .Build();
 
-                Log.CloseAndFlush();
+                _host.Start();
+
+                return true;
             }
-            catch (Exception e)
+
+            public bool Stop(HostControl hostControl)
             {
-                Log.Error(e, "Could not start application");
+                _host?.Stop();
+                _host?.Dispose();
+
                 Log.CloseAndFlush();
-                Environment.Exit(-1);
+
+                return true;
             }
         }
     }

@@ -9,14 +9,31 @@ namespace Jeeves.Core.UnitTests
     [TestClass]
     public class JeevesModuleTests
     {
+        private readonly Uri _uriHttp = new Uri("http://localhost:9042/jeeves/");
+        private readonly Uri _uriHttps = new Uri("https://localhost:9042/jeeves/");
+
+        [TestMethod]
+        public void Bootstrapper_Exception_AuthenticatorWithoutHttps()
+        {
+            var store = Substitute.For<IDataStore>();
+            var authenticator = Substitute.For<IUserAuthenticator>();
+
+            Assert.ThrowsException<InvalidOperationException>(() =>
+            {
+                using (var boot = new JeevesBootstrapper(_uriHttp, store, authenticator, Substitute.For<IJeevesLog>()))
+                {
+                    // do nothing
+                }
+            });
+        }
+
         [TestMethod]
         public void GetValue_Ok_WithHttp()
         {
-            var settings = CreateSettings(SecurityOption.Http);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
             store.RetrieveValue("admin", "my_app", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
-            var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
+            var response = PerformGetRequest(_uriHttp, store, null, "/get/admin/my_app/my_key", with =>
             {
                 with.HttpRequest();
             });
@@ -27,11 +44,12 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetValue_Ok_WithHttpsAndAuthentication()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
             store.RetrieveValue("admin", "my_app", "my_key").Returns("{ \"Data\" : \"Foo\" }");
 
-            var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
+            var authenticator = CreateAuthenticatorWithUser();
+
+            var response = PerformGetRequest(_uriHttps, store, authenticator, "/get/admin/my_app/my_key", with =>
             {
                 with.Query("apikey", "my_api");
                 with.HttpsRequest();
@@ -43,10 +61,9 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetValue_SeeOther_NoHttps()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
 
-            var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
+            var response = PerformGetRequest(_uriHttps, store, null, "/get/admin/my_app/my_key", with =>
             {
                 with.HttpRequest();
             });
@@ -57,10 +74,10 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetValue_Unauthorized_NoApikey()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
             var store = Substitute.For<IDataStore>();
+            var authenticator = Substitute.For<IUserAuthenticator>();
 
-            var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with => with.HttpsRequest());
+            var response = PerformGetRequest(_uriHttps, store, authenticator, "/get/admin/my_app/my_key", with => with.HttpsRequest());
 
             Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
         }
@@ -68,10 +85,10 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetValue_Unauthorized_WrongApikey()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
             var store = Substitute.For<IDataStore>();
+            var authenticator = Substitute.For<IUserAuthenticator>();
 
-            var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
+            var response = PerformGetRequest(_uriHttps, store, authenticator, "/get/admin/my_app/my_key", with =>
             {
                 with.Query("apikey", "some_other_secret");
                 with.HttpsRequest();
@@ -83,10 +100,9 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void GetValue_NoContent_NoValueInDataStore()
         {
-            var settings = CreateSettings(SecurityOption.Http);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
 
-            var response = PerformGetRequest(settings, store, "/get/admin/my_app/my_key", with =>
+            var response = PerformGetRequest(_uriHttp, store, null, "/get/admin/my_app/my_key", with =>
             {
                 with.HttpRequest();
             });
@@ -97,10 +113,10 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void PostValue_Ok_WithHttpsAndAuthentication()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
+            var authenticator = CreateAuthenticatorWithUser();
 
-            var response = PerformPostRequest(settings, store, "/post/admin/my_app/my_key", with =>
+            var response = PerformPostRequest(_uriHttps, store, authenticator, "/post/admin/my_app/my_key", with =>
             {
                 with.Query("apikey", "my_api");
                 with.FormValue("value", "barbarbar");
@@ -114,10 +130,9 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void PostValue_Ok_WithHttp()
         {
-            var settings = CreateSettings(SecurityOption.Http);
             var store = Substitute.For<IDataStore>();
 
-            var response = PerformPostRequest(settings, store, "/post/admin/my_app/my_key", with =>
+            var response = PerformPostRequest(_uriHttp, store, null, "/post/admin/my_app/my_key", with =>
             {
                 with.FormValue("value", "barbarbar");
                 with.HttpRequest();
@@ -130,10 +145,10 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void PostValue_BadRequest_NoContent()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
+            var authenticator = CreateAuthenticatorWithUser();
 
-            var response = PerformPostRequest(settings, store, "/post/admin/my_app/my_key", with =>
+            var response = PerformPostRequest(_uriHttps, store, authenticator, "/post/admin/my_app/my_key", with =>
             {
                 with.Query("apikey", "my_api");
                 with.HttpsRequest();
@@ -145,10 +160,10 @@ namespace Jeeves.Core.UnitTests
         [TestMethod]
         public void PostValue_BadRequest_EmptyContent()
         {
-            var settings = CreateSettings(SecurityOption.HttpsAndAuthentication);
-            var store = CreateStoreWithUser();
+            var store = Substitute.For<IDataStore>();
+            var authenticator = CreateAuthenticatorWithUser();
 
-            var response = PerformPostRequest(settings, store, "/post/admin/my_app/my_key", with =>
+            var response = PerformPostRequest(_uriHttps, store, authenticator, "/post/admin/my_app/my_key", with =>
             {
                 with.Query("apikey", "my_api");
                 with.FormValue("value", string.Empty);
@@ -165,32 +180,27 @@ namespace Jeeves.Core.UnitTests
             Assert.AreEqual(expectedValue, response.Body.AsString());
         }
 
-        private JeevesSettings CreateSettings(SecurityOption security)
+        private IUserAuthenticator CreateAuthenticatorWithUser()
         {
-            return new JeevesSettings("some_uri", security);
+            var authenticator = Substitute.For<IUserAuthenticator>();
+            authenticator.RetrieveUser(Arg.Any<string>()).Returns(new JeevesUser("admin", "my_app"));
+
+            return authenticator;
         }
 
-        private IDataStore CreateStoreWithUser()
+        private BrowserResponse PerformPostRequest(Uri baseUrl, IDataStore store, IUserAuthenticator authenticator, string url, Action<BrowserContext> with)
         {
-            var store = Substitute.For<IDataStore>();
-            store.RetrieveUser("my_api").Returns(new JeevesUser("admin", "my_app", true));
-
-            return store;
+            return PerformRequest(baseUrl, store, authenticator, b => b.Post(url, with));
         }
 
-        private BrowserResponse PerformPostRequest(JeevesSettings settings, IDataStore store, string url, Action<BrowserContext> with)
+        private BrowserResponse PerformGetRequest(Uri baseUrl, IDataStore store, IUserAuthenticator authenticator, string url, Action<BrowserContext> with)
         {
-            return PerformRequest(settings, store, b => b.Post(url, with));
+            return PerformRequest(baseUrl, store, authenticator, b => b.Get(url, with));
         }
 
-        private BrowserResponse PerformGetRequest(JeevesSettings settings, IDataStore store, string url, Action<BrowserContext> with)
+        private BrowserResponse PerformRequest(Uri baseUrl, IDataStore store, IUserAuthenticator authenticator, Func<Browser, BrowserResponse> request)
         {
-            return PerformRequest(settings, store, b => b.Get(url, with));
-        }
-
-        private BrowserResponse PerformRequest(JeevesSettings settings, IDataStore store, Func<Browser, BrowserResponse> request)
-        {
-            using (var boot = new JeevesBootstrapper(settings, store, Substitute.For<IJeevesLog>()))
+            using (var boot = new JeevesBootstrapper(baseUrl, store, authenticator, Substitute.For<IJeevesLog>()))
             {
                 var browser = new Browser(boot);
 

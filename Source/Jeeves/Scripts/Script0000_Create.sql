@@ -15,7 +15,6 @@ CREATE TABLE User
   Apikey        TEXT        UNIQUE,
   UserName      TEXT        COLLATE NOCASE NOT NULL,
   Application   TEXT        COLLATE NOCASE NOT NULL,
-  CanWrite      BOOLEAN     NOT NULL,
   Revoked       BOOLEAN     NOT NULL,
   Created       DATE        NOT NULL
 );

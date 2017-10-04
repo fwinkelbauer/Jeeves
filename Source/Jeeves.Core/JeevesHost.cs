@@ -6,29 +6,21 @@ namespace Jeeves.Core
     public sealed class JeevesHost : IDisposable
     {
         private readonly JeevesBootstrapper _bootstrapper;
-        private readonly string _baseUrl;
+        private readonly Uri _baseUrl;
         private readonly NancyHost _host;
         private readonly IJeevesLog _log;
 
-        public JeevesHost(JeevesSettings settings, IDataStore store)
-            : this(settings, store, new NullLog())
+        internal JeevesHost(Uri baseUrl, IDataStore store, IUserAuthenticator authenticator, IJeevesLog log)
         {
-        }
-
-        public JeevesHost(JeevesSettings settings, IDataStore store, IJeevesLog log)
-        {
-            _bootstrapper = new JeevesBootstrapper(
-                settings.ThrowIfNull(nameof(settings)),
-                store.ThrowIfNull(nameof(store)),
-                log.ThrowIfNull(nameof(log)));
+            _bootstrapper = new JeevesBootstrapper(baseUrl, store, authenticator, log);
 
             var config = new HostConfiguration()
             {
                 UrlReservations = new UrlReservations() { CreateAutomatically = true }
             };
 
-            _baseUrl = settings.BaseUrl;
-            _host = new NancyHost(_bootstrapper, config, new Uri(settings.BaseUrl));
+            _baseUrl = baseUrl;
+            _host = new NancyHost(_bootstrapper, config, baseUrl);
             _log = log;
         }
 
@@ -49,19 +41,6 @@ namespace Jeeves.Core
         {
             _log.Information("Stopping Jeeves web service at {url}", _baseUrl);
             _host.Stop();
-        }
-
-        private class NullLog : IJeevesLog
-        {
-            public void Information(string messageTemplate, params object[] values)
-            {
-                // do nothing
-            }
-
-            public void Error(Exception ex, string messageTemplate, params object[] values)
-            {
-                // do nothing
-            }
         }
     }
 }

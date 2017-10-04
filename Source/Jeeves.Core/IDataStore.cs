@@ -5,7 +5,5 @@
         string RetrieveValue(string userName, string application, string key);
 
         void StoreValue(string userName, string application, string key, string value);
-
-        JeevesUser RetrieveUser(string apikey);
     }
 }

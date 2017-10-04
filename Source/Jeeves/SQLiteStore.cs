@@ -4,13 +4,12 @@ using System.IO;
 using System.Reflection;
 using Dapper;
 using DbUp;
-using DbUp.Engine.Output;
 using Jeeves.Core;
 using Serilog;
 
 namespace Jeeves
 {
-    internal class SQLiteStore : IDataStore
+    internal class SQLiteStore : IDataStore, IUserAuthenticator
     {
         #region Queries
 
@@ -28,7 +27,7 @@ INSERT INTO Configuration (UserName, Application, Key, Value, Revoked, Created)
 VALUES (@User, @App, @Key, @Value, @Revoked, @Created);";
 
         private const string SelectUserQuery = @"
-SELECT UserName, Application, CanWrite, Revoked
+SELECT UserName, Application, Revoked
 FROM User
 WHERE Apikey = @Apikey;";
 
@@ -85,7 +84,7 @@ WHERE Apikey = @Apikey;";
                 
                 var user = connection.QueryFirstOrDefault<User>(SelectUserQuery, new { Apikey = apikey });
 
-                return (user == null || user.Revoked) ? null : new JeevesUser(user.UserName, user.Application, user.CanWrite);
+                return (user == null || user.Revoked) ? null : new JeevesUser(user.UserName, user.Application);
             }
         }
 
@@ -96,7 +95,7 @@ WHERE Apikey = @Apikey;";
                 return;
             }
 
-            _log.Information("Preparing database {database}", _database);
+            _migrateDone = false;
 
             var parentDir = Directory.GetParent(_database);
 
@@ -108,7 +107,6 @@ WHERE Apikey = @Apikey;";
             var upgrader = DeployChanges.To
                 .SQLiteDatabase(_connectionString)
                 .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
-                .LogTo(new DbUpLog())
                 .Build();
 
             var result = upgrader.PerformUpgrade();
@@ -116,32 +114,11 @@ WHERE Apikey = @Apikey;";
             if (result.Successful)
             {
                 _migrateDone = true;
-                _log.Information("Finished migration!");
             }
             else
             {
                 _log.Error(result.Error, "Error while migrating database");
                 throw result.Error;
-            }
-        }
-
-        private class DbUpLog : IUpgradeLog
-        {
-            private readonly ILogger _dbUpLog = Log.ForContext("SourceContext", "DbUp");
-
-            public void WriteError(string messageTemplate, params object[] args)
-            {
-                _dbUpLog.Error(messageTemplate, args);
-            }
-
-            public void WriteInformation(string messageTemplate, params object[] args)
-            {
-                _dbUpLog.Information(messageTemplate, args);
-            }
-
-            public void WriteWarning(string messageTemplate, params object[] args)
-            {
-                _dbUpLog.Warning(messageTemplate, args);
             }
         }
 
@@ -162,19 +139,16 @@ WHERE Apikey = @Apikey;";
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         private class User
         {
-            public User(string userName, string application, bool canWrite, bool revoked)
+            public User(string userName, string application, bool revoked)
             {
                 UserName = userName;
                 Application = application;
-                CanWrite = canWrite;
                 Revoked = revoked;
             }
 
             public string UserName { get; }
 
             public string Application { get; }
-
-            public bool CanWrite { get; }
 
             public bool Revoked { get; }
         }
