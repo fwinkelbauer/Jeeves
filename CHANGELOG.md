@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## [Unreleased]
 
+## [0.2.0] - 2017-10-04
+
+Most of the changes in this release are **breaking changes**. Please refer to the updated `README` file!
+
+### Changed
+
 - An instance of `JeevesHost` is now created using a `JeevesHostBuilder`. The builder can be used to add logging and user authentication
 - Renamed the `PutValue(...)` method in `IDataStore` to `StoreValue(...)`
 - Moved the `RetrieveUser(...)` method of `IDataStore` into `IUserAuthenticator`

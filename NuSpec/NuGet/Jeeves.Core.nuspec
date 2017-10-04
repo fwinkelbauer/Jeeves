@@ -3,7 +3,7 @@
   <metadata>
     <id>Jeeves.Core</id>
     <title>Jeeves.Core</title>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <authors>fwinkelbauer</authors>
     <owners>fwinkelbauer</owners>
     <projectUrl>https://github.com/fwinkelbauer/Jeeves</projectUrl>
@@ -15,7 +15,7 @@
     <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
     <tags>Configuration Service</tags>
     <dependencies>
-      <dependency id="Nancy" version="1.4.3" />
+      <dependency id="Nancy" version="1.4.4" />
       <dependency id="Nancy.Authentication.Stateless" version="1.4.1" />
       <dependency id="Nancy.Hosting.Self" version="1.4.1" />
     </dependencies>
