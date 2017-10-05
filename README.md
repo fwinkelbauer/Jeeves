@@ -95,7 +95,7 @@ IUserAuthenticator authenticator = new MyUserAuthenticator();
 IJeevesLog log = new MyLog();
 
 JeevesHostBuilder hostBuilder = new JeevesHostBuilder(baseUrl, store)
-    .WithUserAuthentication(authenticator)
+    //.WithUserAuthentication(authenticator) // only works with HTTPS
     .LogTo(log);
 
 using (JeevesHost host = hostBuilder.Build())
