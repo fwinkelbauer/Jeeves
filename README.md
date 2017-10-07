@@ -1,6 +1,6 @@
 # Jeeves
 
-Jeeves is a standalone web services which provides a REST API used to read/write application configuration data.
+Jeeves is a standalone web service which provides a REST API used to read/write application configuration data.
 
 ## Usage
 
