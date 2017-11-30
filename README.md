@@ -103,6 +103,7 @@ using (JeevesHost host = hostBuilder.Build())
     host.Start();
     Console.WriteLine("Press ENTER to exit");
     Console.ReadLine();
+    host.Stop();
 }
 ```
 
