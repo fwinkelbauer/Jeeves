@@ -5,6 +5,7 @@ CREATE TABLE Configuration
   Application   TEXT        COLLATE NOCASE NOT NULL,
   Key           TEXT        COLLATE NOCASE NOT NULL,
   Value         TEXT        NOT NULL,
+  Revoked       BOOLEAN     NOT NULL,
   Created       DATE        NOT NULL
 );
 
@@ -14,5 +15,6 @@ CREATE TABLE User
   Apikey        TEXT        UNIQUE,
   UserName      TEXT        COLLATE NOCASE NOT NULL,
   Application   TEXT        COLLATE NOCASE NOT NULL,
+  Revoked       BOOLEAN     NOT NULL,
   Created       DATE        NOT NULL
 );

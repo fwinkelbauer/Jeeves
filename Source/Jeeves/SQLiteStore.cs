@@ -14,7 +14,7 @@ namespace Jeeves
         #region Queries
 
         private const string SelectConfigurationQuery = @"
-SELECT Value
+SELECT Value, Revoked
 FROM Configuration
 WHERE UserName = @User
 AND Application = @App
@@ -23,11 +23,11 @@ ORDER BY ID DESC
 LIMIT 1;";
 
         private const string InsertConfigurationQuery = @"
-INSERT INTO Configuration (UserName, Application, Key, Value, Created)
-VALUES (@User, @App, @Key, @Value, @Created);";
+INSERT INTO Configuration (UserName, Application, Key, Value, Revoked, Created)
+VALUES (@User, @App, @Key, @Value, @Revoked, @Created);";
 
         private const string SelectUserQuery = @"
-SELECT UserName, Application
+SELECT UserName, Application, Revoked
 FROM User
 WHERE Apikey = @Apikey;";
 
@@ -58,7 +58,7 @@ WHERE Apikey = @Apikey;";
 
                 var config = connection.QueryFirstOrDefault<Configuration>(SelectConfigurationQuery, new { User = userName, App = application, Key = key });
 
-                return (config == null) ? null : config.Value;
+                return (config == null || config.Revoked) ? null : config.Value;
             }
         }
 
@@ -70,7 +70,7 @@ WHERE Apikey = @Apikey;";
             {
                 connection.Open();
 
-                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value, Created = DateTime.Now });
+                connection.Execute(InsertConfigurationQuery, new { User = userName, App = application, Key = key, Value = value, Revoked = false, Created = DateTime.Now });
             }
         }
 
@@ -84,7 +84,7 @@ WHERE Apikey = @Apikey;";
                 
                 var user = connection.QueryFirstOrDefault<User>(SelectUserQuery, new { Apikey = apikey });
 
-                return (user == null) ? null : new JeevesUser(user.UserName, user.Application);
+                return (user == null || user.Revoked) ? null : new JeevesUser(user.UserName, user.Application);
             }
         }
 
@@ -125,26 +125,32 @@ WHERE Apikey = @Apikey;";
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         private class Configuration
         {
-            public Configuration(string value)
+            public Configuration(string value, bool revoked)
             {
                 Value = value;
+                Revoked = revoked;
             }
 
             public string Value { get; }
+
+            public bool Revoked { get; }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses")]
         private class User
         {
-            public User(string userName, string application)
+            public User(string userName, string application, bool revoked)
             {
                 UserName = userName;
                 Application = application;
+                Revoked = revoked;
             }
 
             public string UserName { get; }
 
             public string Application { get; }
+
+            public bool Revoked { get; }
         }
     }
 }
