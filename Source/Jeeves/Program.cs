@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Jeeves.Core;
+using Newtonsoft.Json;
 using Serilog;
 using Topshelf;
 
@@ -8,24 +9,13 @@ namespace Jeeves
 {
     public static class Program
     {
-        private const string BaseUrl = "http://localhost:9042/jeeves/";
-        private const string JeevesDir = @"C:\ProgramData\Jeeves";
-
-        private static readonly string _databasePath = Path.Combine(JeevesDir, "Jeeves.sqlite");
-        private static readonly string _logPath = Path.Combine(JeevesDir, @"logs\{Date}.txt");
+        private const string SettingsFile = "Settings.json";
 
         public static void Main()
         {
             var exitCode = HostFactory.Run(hc =>
             {
                 hc.Service<Service>();
-
-                hc.OnException(e =>
-                {
-                    Log.Error(e, "Could not start Jeeves");
-                    Log.CloseAndFlush();
-                });
-
                 hc.SetServiceName("Jeeves");
                 hc.SetDescription("A simple REST service which provides configuration data for applications");
             });
@@ -41,15 +31,28 @@ namespace Jeeves
 
             public bool Start(HostControl hostControl)
             {
-                Log.Logger = new LoggerConfiguration()
+                Settings settings = null;
+                var logConfig = new LoggerConfiguration()
                     .MinimumLevel.Debug()
-                    .WriteTo.Console()
-                    .WriteTo.RollingFile(_logPath, retainedFileCountLimit: 7)
-                    .CreateLogger();
+                    .WriteTo.Console();
 
-                var store = new SQLiteStore(_databasePath);
+                try
+                {
+                    settings = LoadSettings();
+                    Log.Logger = logConfig
+                        .WriteTo.RollingFile(Path.Combine(settings.LogDirectory, "{Date}.txt"), retainedFileCountLimit: 7)
+                        .CreateLogger();
+                }
+                catch (Exception e)
+                {
+                    Log.Logger = logConfig.CreateLogger();
+                    Log.Error(e, "Error while loading settings");
+                    return false;
+                }
 
-                _host = new JeevesHostBuilder(new Uri(BaseUrl), store)
+                var store = new SQLiteStore(settings.DatabaseFile);
+
+                _host = new JeevesHostBuilder(new Uri(settings.BaseUrl), store)
                     .LogTo(new JeevesLog())
                     .Build();
 
@@ -66,6 +69,16 @@ namespace Jeeves
                 Log.CloseAndFlush();
 
                 return true;
+            }
+
+            private Settings LoadSettings()
+            {
+                if (File.Exists(SettingsFile))
+                {
+                    return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(SettingsFile));
+                }
+
+                return new Settings("http://localhost:9042/jeeves/", "Jeeves.sqlite", "logs");
             }
         }
     }
