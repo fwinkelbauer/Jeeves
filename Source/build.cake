@@ -38,8 +38,8 @@ Task("Pack")
     .IsDependentOn("Test")
     .Does(() =>
 {
-    StoreChocolateyArtifacts("NuSpec/Chocolatey/Jeeves.nuspec");
-    StoreNuGetArtifacts("NuSpec/NuGet/Jeeves.Core.nuspec");
+    StoreChocolateyArtifact("NuSpec/Chocolatey/Jeeves.nuspec");
+    StoreNuGetArtifact("NuSpec/NuGet/Jeeves.Core.nuspec");
 });
 
 Task("Publish")
