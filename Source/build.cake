@@ -31,7 +31,7 @@ Task("Test")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    MSTest($"*.UnitTests/bin/{configuration}/*.UnitTests.dll");
+    VSTest($"*.UnitTests/bin/{configuration}/*.UnitTests.dll", new VSTestSettings { Logger = "trx", TestAdapterPath = "." });
 });
 
 Task("Pack")
