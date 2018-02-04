@@ -13,13 +13,13 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>A standalone configuration store web service</summary>
     <description>Jeeves is a self contained web service which serves a configuration store through a REST API.</description>
-    <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
+    <copyright>Copyright (c) 2018 Florian Winkelbauer</copyright>
     <tags>Configuration Service</tags>
   </metadata>
   <files>
-    <file src=".\..\..\BuildArtifacts\Output\Jeeves\**\*" target="tools" />
-    <file src=".\..\..\LICENSE.txt" target="tools" />
-    <file src=".\chocolateyInstall.ps1" target="tools" />
-    <file src=".\chocolateyUninstall.ps1" target="tools" />
+    <file src="..\..\..\Artifacts\Build\Jeeves\**\*" target="tools" />
+    <file src="..\..\..\LICENSE.txt" target="tools" />
+    <file src="chocolateyInstall.ps1" target="tools" />
+    <file src="chocolateyUninstall.ps1" target="tools" />
   </files>
 </package>

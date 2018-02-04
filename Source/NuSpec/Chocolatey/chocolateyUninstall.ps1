@@ -5,5 +5,5 @@ $ErrorActionPreference = 'Stop'
 
 if ($lastExitCode -ne 0)
 {
-  throw "Could not uninstall Jeeves. See the log file for more information"
+  throw "Could not uninstall Jeeves."
 }

@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>A template to create a standalone configuration store web service</summary>
     <description>Jeeves.Core is a self contained web service which serves your own implementation of a configuration store through a REST API.</description>
-    <copyright>Copyright (c) 2017 Florian Winkelbauer</copyright>
+    <copyright>Copyright (c) 2018 Florian Winkelbauer</copyright>
     <tags>Configuration Service</tags>
     <dependencies>
       <dependency id="Nancy" version="1.4.4" />
@@ -21,7 +21,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Core.dll" target="lib\net45" />
-    <file src=".\..\..\BuildArtifacts\Output\Jeeves.Core\Jeeves.Core.pdb" target="lib\net45" />
+    <file src="..\..\..\Artifacts\Build\Jeeves.Core\**\*" target="lib\net45" />
   </files>
 </package>
