@@ -17,7 +17,7 @@
     <tags>Configuration Service</tags>
   </metadata>
   <files>
-    <file src="..\..\..\Artifacts\Build\Jeeves\**\*" target="tools" />
+    <file src="..\..\..\Artifacts\Build\Jeeves\**\*" exclude="**\*.lastcodeanalysissucceeded;**\*.CodeAnalysisLog.xml" target="tools" />
     <file src="..\..\..\LICENSE.txt" target="tools" />
     <file src="chocolateyInstall.ps1" target="tools" />
     <file src="chocolateyUninstall.ps1" target="tools" />

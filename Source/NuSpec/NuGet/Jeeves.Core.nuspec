@@ -21,6 +21,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\..\Artifacts\Build\Jeeves.Core\**\*" target="lib\net45" />
+    <file src="..\..\..\Artifacts\Build\Jeeves.Core\**\*" exclude="**\*.lastcodeanalysissucceeded;**\*.CodeAnalysisLog.xml" target="lib\net45" />
   </files>
 </package>
