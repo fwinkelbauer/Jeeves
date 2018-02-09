@@ -1,6 +1,13 @@
 # Jeeves
 
-Jeeves is a standalone web service which provides a REST API used to read/write application configuration data.
+Jeeves is a standalone Windows web service which provides a REST API used to read/write application configuration data.
+
+## Why?
+
+The main reason for creating this repository was to learn new aspects about C#. Jeeves and Jeeves.Core are fully functional projects,
+but other tools (e.g. [Consul](https://consul.io/)) are far more mature and feature-rich.
+
+Feel free to try Jeeves if you are searching for a very simple configuration data service.
 
 ## Usage
 
@@ -37,7 +44,7 @@ curl https://localhost:9042/jeeves/post/my_user/my_application/some_json?apikey=
 ## Projects
 
 - **Jeeves.Core:** The core project to create a REST API for any data store
-- **Jeeves:** A work in progress example implementation of **Jeeves.Core** using SQLite
+- **Jeeves:** An example implementation of **Jeeves.Core** using SQLite
 
 ## How To Use Jeeves.Core
 
