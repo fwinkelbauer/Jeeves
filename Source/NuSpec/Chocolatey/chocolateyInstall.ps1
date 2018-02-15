@@ -1,6 +1,8 @@
 $ErrorActionPreference = 'Stop'
 
-& $env:ChocolateyInstall\lib\Jeeves\tools\Jeeves.exe install
+$installFolder = (Split-Path -Parent $MyInvocation.MyCommand.Definition)
+
+& $installFolder\Jeeves.exe install
 
 if ($lastExitCode -ne 0)
 {
