@@ -1,5 +1,7 @@
 # Jeeves
 
+**Deprecated:** I have stopped developing this package.
+
 Jeeves is a standalone Windows web service which provides a REST API used to read/write application configuration data.
 
 ## Why?
